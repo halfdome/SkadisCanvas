@@ -13,9 +13,9 @@ Requires Node 22.13+ and pnpm. Run `pnpm install`, then `pnpm dev`. Use `pnpm bu
 - PNG/JPEG/WebP/SVG artwork, fit/fill, zoom, positioning and 2–8 editable filament colors with palette extraction.
 - Whole-wall preview, tile selection and source-resolution feedback.
 - Face-down colored surface, default 3 × 0.2 mm layers with a 4.4 mm backing.
-- One core 3MF containing all named tile assemblies and their color parts. Selected-tile ZIP includes a 3MF, STL parts and assembly map; blank fit-test STL and project settings are also available.
-- X1C, H3C and custom-printer dimension presets, editable edge margin and rear tower reserve. Oversize boards block export. These are geometry planning presets, not native Bambu Studio process profiles.
-- Bambu PLA Basic / PLA Matte named display-color presets; Bambu PETG HF, Bambu ABS and other brands can use custom colors. Filament selections are retained in exported part names and project metadata.
+- One native Bambu Studio 3MF for up to 36 tiles; larger murals automatically split into balanced rectangular projects, downloaded in one ZIP. Custom printers use one portable core 3MF. Selected-tile ZIP includes a 3MF, STL parts and assembly map; blank fit-test STL and project settings are also available.
+- X1C, H3C and custom-printer dimension presets, editable edge margin and rear tower reserve. Oversize boards block export. X1C/H3C exports include native Bambu Studio machine, process and filament settings for a 0.4 mm nozzle.
+- Bambu PLA Basic / PLA Matte named display-color presets; Bambu PETG HF, Bambu ABS and other brands can use custom colors. Original image colors are automatically sampled on upload and matched to Bambu PLA Basic using CIELAB distance. All suggestions remain editable. Filament selections are retained as per-part assignments in the Bambu project.
 - ASCII/binary STL inspection and optional bounding-box dimensions. Imported mesh geometry is not used.
 - Worker-based export with progress and cancellation. Limits: 100 boards, 160,000 samples per tile, 1.5 million samples across the design.
 
@@ -28,18 +28,17 @@ Artwork rows go from top to bottom. Model Y goes from bottom to top. Face-down e
 ## Slicer workflow and current limits
 
 1. Print a blank board to check accessory fit. Default slot dimensions are a starting point, not a certified IKEA fit.
-2. Export one colored tile and import its 3MF as a multipart model. Assign each named part to a filament. Core 3MF material colors do not guarantee that a slicer assigns AMS/MMU slots automatically.
+2. Export one colored tile and open its 3MF as a project in Bambu Studio. Review the printer and filament presets. Custom-printer core 3MF needs manual filament and plate setup.
 3. Alternatively, import all selected-tile STLs together as parts of ONE object; preserve their positions. Do not independently center or drop parts to the bed.
 4. Use the configured first and subsequent layer heights. Inspect the colored layers and small features before printing.
 5. Print one test before committing to the whole wall.
 
-The output is geometry, not G-code or a machine-specific print profile. Bambu Studio import and physical printing have not yet been validated. No wall mounts, rear standoffs, tile connectors, screw holes, load rating or structural engineering are provided. The preview uses an approximate screen raster; exported color boundaries follow the selected mm/pixel sampling. Raster upscaling cannot restore detail. Vector paths are currently rasterized too. Small clipped features may be below the nozzle’s printable width.
+The output is unsliced geometry with Bambu project settings for X1C/H3C. Import and slicing have been validated in Bambu Studio 2.9.1.70. Physical printing has not been tested. No wall mounts, rear standoffs, tile connectors, screw holes, load rating or structural engineering are provided. The preview uses an approximate screen raster; exported color boundaries follow the selected mm/pixel sampling. Raster upscaling cannot restore detail. Vector paths are currently rasterized too. Small clipped features may be below the nozzle’s printable width.
 
 Project JSON contains settings but not source artwork; upload the matching image when restoring settings. Browser reloads otherwise reset the project.
 
 ## Next milestones
 
-- Validate a sample 3MF in Bambu Studio, including parts, filament mapping and layer inspection.
 - Test fit and face opacity on a small print; tune slot tolerance and colored-layer count.
 - Add calibrated mounting, standoffs and panel connectors.
 - Preserve flat uploaded template geometry using mesh slicing/booleans.
@@ -55,6 +54,22 @@ Project JSON contains settings but not source artwork; upload the matching image
 
 X1C nominal volume is 256 × 256 × 256 mm; H3C is 330 × 320 × 325 mm. The X1C rectangle conservatively reserves the full left 18 mm strip to avoid its 18 × 28 mm front-left cutter area. Default planning allowances add 5 mm on every edge and a 40 mm rear strip for a tower. Resulting tile allowances are X1C 228 × 206 mm and H3C 320 × 270 mm. These margins are app defaults, not manufacturer requirements; confirm actual tower, brim, nozzle and plate placement in the slicer. The largest pitch-aligned sizes with these defaults are 200 × 200 mm and 320 × 240 mm respectively.
 
-The all-tile 3MF is an inventory layout with 10 mm spacing, not a single print plate or pre-sliced Bambu project. Each tile has its own build item and multipart assembly; distribute the tiles across plates before slicing. Its filename identifies the selected printer version. Changing printer does not silently resize the artwork or board: the app blocks oversized boards and offers an explicit largest-size button.
+X1C/H3C files place one tile per print plate. Murals larger than 36 tiles split into balanced rectangular portions. A 5×8 mural becomes two 5×4 projects with 20 plates each. Each tile appears once, retains its installed-wall coordinates, and uses the same whole-wall hole lattice and image sampling across file boundaries. Custom-printer 3MF uses an inventory layout with 10 mm spacing and requires manual plate arrangement. Its filename identifies the selected printer version. Changing printer does not silently resize the artwork or board: the app blocks oversized boards and offers an explicit largest-size button.
 
 Sources: [X1C manufacturer specifications](https://public-cdn.bambulab.com/store/bambulab-X1-carbon-tech-specs.pdf?v=20250816053819), [X1C machine profile](https://raw.githubusercontent.com/bambulab/BambuStudio/master/resources/profiles/BBL/machine/Bambu%20Lab%20X1%20Carbon%200.4%20nozzle.json), [H3C machine profile](https://raw.githubusercontent.com/bambulab/BambuStudio/master/resources/profiles/BBL/machine/Bambu%20Lab%20H3C%200.4%20nozzle.json). Filament swatch sources are recorded in `lib/filaments.mjs`. Colors are approximate manufacturer display swatches, not calibrated predictions of a finished print or live inventory.
+
+## Bambu Studio export repair (2026-11-13)
+
+X1C and H3C exports are unsliced Bambu Studio projects for a 0.4 mm nozzle. Open the file as a **project**. Each active tile occupies one plate; backing and surface volumes remain parts of one named object. The project includes per-part filament assignments, the selected layer height, and official system preset values. A top view shows the backing because the artwork is face-down; inspect the first layers in Preview.
+
+Bambu Studio supports **36 plates per project**. For a 5×8 mural, the exporter creates two 5×4 projects with 20 plates each. Both 3MF files and an assembly map download together in one ZIP. Rectangular splits minimize the number of files first, then balance the number of tiles. Every tile is included exactly once; there are no queued or disabled objects. Custom-printer export remains portable 3MF and requires manual plate arrangement and filament setup. Custom/other-brand filaments use Generic PLA as a starting preset; select the real material before printing.
+
+The previous export had no Bambu project metadata and put the entire mural across a single plate. Reproduced in Bambu Studio 2.9.1.70: the generic color importer appeared, objects exceeded the plate boundary, and slicing was disabled.
+
+Run `pnpm test` for geometry, seam, material, rectangular partition membership, and plate-placement regression tests. Run `pnpm test:bambu` on macOS with Bambu Studio installed, or set `BAMBU_STUDIO` to its executable path. The integration test imports and slices two four-color tiles for each printer using the actual Bambu CLI, requires a successful exit, and inspects the generated G-code. It asserts 25 layers at 0.2 mm, four colors in layers 1–3, only backing filament in layers 4–25, and nonzero material usage for every color. Results and logs are written under `outputs/validation/`. The CLI needs normal macOS graphics access to render its preview images.
+
+`lib/bambu-profiles.mjs` is a snapshot of Bambu Studio 2.9.1.70 **system** presets, never user presets. Regenerate it with `python3 scripts/snapshot-bambu-profiles.py /path/to/BambuStudio/resources/profiles/BBL`. Upstream: https://github.com/bambulab/BambuStudio/tree/master/resources/profiles/BBL. See `third-party/BambuStudio-LICENSE.txt` for the upstream AGPL license. The `Application` marker selects Bambu's project importer; the `Generator` metadata identifies Surface Studio as the actual generator.
+
+These checks establish import and slicing behavior. Physical print quality, color accuracy, layer adhesion, mounting, and accessory fit still require a test print.
+
+For browser regression validation, upload `tests/fixtures/original-colors.svg`, keep the default 5×8 wall, and export each printer version (use the largest-size button for H3C). The upload must suggest Bambu Green, Yellow, Red and Cyan without clicking the match button. Pass each downloaded ZIP to `node scripts/validate-browser-export.mjs /path/to/download.zip outputs/validation/browser-x1c` (or `browser-h3c`). This uses the actual downloaded bytes, slices all 40 plates across both rectangular files, checks tile coverage and original wall coordinates, and verifies the surface/backing layers in the resulting G-code. Open a representative file in the GUI too; CLI success does not replace visual inspection.
