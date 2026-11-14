@@ -16,7 +16,8 @@ Requires Node 22.13+ and pnpm. Run `pnpm install`, then `pnpm dev`. Use `pnpm bu
 - One native Bambu Studio 3MF for up to 36 tiles; larger murals automatically split into balanced rectangular projects, downloaded in one ZIP. Custom printers use one portable core 3MF. Selected-tile ZIP includes a 3MF, STL parts and assembly map; blank fit-test STL and project settings are also available.
 - Native Bambu Studio 0.4 mm presets for H3C, X1C, H2C, H2D, H2D Pro, H2S, X2D, X1E, X1, P2S, P1S, P1P, A2L, A1 and A1 mini. Board limits account for nozzle reach, cutter clearance and the prime tower.
 - Named Bambu filament swatches and machine-specific slicer presets for PLA Basic, Matte, Tough+, Silk+ and CF; PETG Basic, HF, Matte, Translucent and CF; ABS, ABS-GF, ASA and ASA-CF. The available choices depend on the printer. Use one base material across the surface and backing for easier print setup.
-- Optional recessed rear tile IDs such as R02-C03. IDs use the same installed-wall coordinates as the 3MF plate names and assembly map.
+- Color depth can cover every layer; at full depth the artwork colors extend through the tile with no separate backing.
+- Optional recessed rear tile IDs such as R02-C03. Engraving requires a separate backing. IDs use the same installed-wall coordinates as the 3MF plate names and assembly map.
 - ASCII/binary STL inspection and optional bounding-box dimensions. Imported mesh geometry is not used.
 - Worker-based export with progress and cancellation. Limits: 100 boards, 160,000 samples per tile, 1.5 million samples across the design.
 
