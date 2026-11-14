@@ -1,3 +1,7 @@
+# Compact composition toolbar — 2026-11-13
+
+UI-only update: combined the composition heading, view controls and wall download into one toolbar. At 1280px desktop width, the preview begins at Y=184 instead of Y=301, reclaiming about 117px. At 390px, controls wrap without horizontal overflow. Preview switches and the relocated download button were exercised in the browser; the downloaded ZIP contained two 3MF projects with all 40 unique tiles. Production build passed. Export and geometry code are unchanged; no new slicer or physical tests were performed for this layout-only change.
+
 # Validation — 2026-11-13, layout, palette, placement and crop update
 
 Tested with Bambu Studio 2.9.1.70 on macOS. No physical print or print job was performed.

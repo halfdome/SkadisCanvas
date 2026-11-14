@@ -36,3 +36,15 @@ body{line-height:1.5}.field>span,.hint,.filename,.select-label,.range-label{colo
 @media(max-width:760px){.preview-area{height:440px}.preview-pane,.details-pane{outline-offset:0}}
 
 .crop-controls{margin-top:14px}.crop-toggle{width:100%;padding:12px;border:1px solid #b9c6bc;border-radius:6px;background:#fff;color:#304f4a;font-weight:600}.crop-toggle.active{background:#304f4a;color:#fff}.crop-canvas{cursor:grab;touch-action:none}.crop-canvas:active{cursor:grabbing}.crop-canvas:focus-visible{outline:3px solid #d38042;outline-offset:3px}
+
+/* Composition and export share one compact toolbar. */
+.preview-pane{container-type:inline-size}
+.compact-toolbar{flex-wrap:nowrap;align-items:center;gap:18px;padding:0 0 12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.compact-toolbar .composition-summary{margin-right:auto;min-width:130px}
+.compact-toolbar h2{margin:0;font-size:20px;white-space:nowrap}
+.compact-toolbar .composition-summary p{margin:4px 0 0;font-size:14px;color:var(--muted);line-height:1.4}
+.compact-toolbar .canvas-actions{flex-shrink:0}
+.compact-toolbar .export-actions{flex-shrink:0;display:flex;align-items:center;gap:10px}
+.compact-toolbar .primary{min-height:44px;padding:10px 14px;white-space:nowrap}
+@container(max-width:780px){.compact-toolbar{flex-wrap:wrap;gap:10px}.compact-toolbar .composition-summary{flex:1}.compact-toolbar .export-actions{order:2}.compact-toolbar .canvas-actions{order:3;width:100%;justify-content:flex-end}}
+@container(max-width:420px){.compact-toolbar .primary{font-size:14px;padding:9px}.compact-toolbar .primary>span{display:none}.compact-toolbar .canvas-actions .segmented{flex-wrap:nowrap}.compact-toolbar .canvas-actions .segmented button{padding:7px;font-size:13px}}
