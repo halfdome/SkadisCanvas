@@ -1,3 +1,11 @@
+## Customer-facing interface copy — 2026-11-13
+
+- Removed the prototype badge, browser-storage banner, promotional introduction, repeated layer summary and nonessential preview commentary. Refined labels, notifications, STL dimension guidance and the print guide; retained actionable printer, material and import information.
+- Reviewed the rendered designer and print guide at 1280 × 720 and 390 × 844. Mobile had no horizontal overflow. Exercised board dimensions, artwork upload, color matching, STL guidance, selected-tile controls and the actual selected-tile download.
+- Confirmed the downloaded ZIP includes the revised tile print guide. Bambu Studio sliced its 80 × 80 mm H3C tile successfully; G-code validation confirmed one plate, 25 layers and three colored layers. Opened the slice in Studio and inspected the centered tile, separate tower and colored artwork at layer 3 (0.60 mm).
+- Production build and all 40 tests passed. X1C and H3C Bambu integration checks passed with two plates each. No geometry or printer configuration changes. No physical print was performed.
+- Screenshots and slice evidence: outputs/validation-polish/.
+
 ## Skadis Canvas rename — 2026-11-13
 
 - Renamed the visible app, browser title, settings picker and export generator metadata to Skadis Canvas. Kept the Bambu Studio compatibility marker unchanged.
