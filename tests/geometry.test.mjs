@@ -4,6 +4,7 @@ import {defaults,validate,dimensions,slots,boardShape,extrude,tileParts,make3mf,
 import {unzipSync,strFromU8} from 'fflate';
 import {quantize,autoPalette} from '../lib/image.mjs';
 import {exportWall} from '../lib/project3mf.mjs';
+import {printerLimits} from '../lib/printers.mjs';
 import {partitionWall,inRegion} from '../lib/partitions.mjs';
 import {matchOriginalColors} from '../lib/filaments.mjs';
 const volume=m=>m.triangles.reduce((s,t)=>{const [a,b,c]=t.map(i=>m.vertices[i]);return s+(a[0]*(b[1]*c[2]-b[2]*c[1])+a[1]*(b[2]*c[0]-b[0]*c[2])+a[2]*(b[0]*c[1]-b[1]*c[0]))/6;},0);
@@ -130,4 +131,44 @@ test('selected tile export retains wall coordinates and stays at the portable or
  const zip=unzipSync(make3mf(parts,'R07-C04',c,{col:3,row:6}));
  assert.ok(strFromU8(zip['3D/3dmodel.model']).includes('transform="1 0 0 0 1 0 0 0 1 0 0 0"'));
  assert.deepEqual(JSON.parse(strFromU8(zip['Metadata/surface-project.json'])).tiles,[{name:'R07-C04',row:7,col:4}]);
+});
+
+test('engraving is a watertight recess on the back and preserves the artwork',()=>{
+  for(const faceDown of [true,false]){
+    const c={...defaults,cols:2,rows:2,width:80,height:80,faceDown};
+    const labels=new Uint8Array([0,1,2,3]);
+    const original=tileParts(c,labels,2,2,1,1);
+    const engraved=tileParts({...c,backLabel:true},labels,2,2,1,1);
+    closed(engraved[0]);
+    assert.deepEqual(engraved.slice(1),original.slice(1));
+    const missing=volume(original[0])-volume(engraved[0]);
+    assert.ok(missing>10&&missing<40,`engraved volume: ${missing}`);
+    const depth=.4,back=faceDown?5:0;
+    assert.ok(engraved[0].vertices.some(([, ,z])=>Math.abs(z-(back+(faceDown?-depth:depth)))<1e-7));
+  }
+});
+
+test('large dual-nozzle plates use only the shared printable area',()=>{
+  const c={...defaults,printer:'h2d',cols:1,rows:1,width:290,height:200};
+  const p=printerLimits(c);
+  assert.equal(p.width,350);
+  assert.equal(p.usableWidth,290);
+  const z=unzipSync(makeProject3mf([{row:0,col:0,name:'R01-C01',parts:tileParts(c,new Uint8Array([0]),1,1)}],c));
+  const settings=JSON.parse(strFromU8(z['Metadata/project_settings.config']));
+  assert.equal(settings.printer_settings_id,'Bambu Lab H2D 0.4 nozzle');
+  assert.deepEqual(settings.nozzle_diameter,['0.4','0.4']);
+  assert.deepEqual(settings.printable_area,['0x0','350x0','350x320','0x320']);
+  assert.throws(()=>validate({...c,width:291}),/exceeds/);
+});
+
+test('PETG and ASA export their real presets and open printers exclude enclosure materials',()=>{
+  for(const [printer,family,type,id] of [['a1mini','Bambu PETG HF','PETG','GFG02'],['p2s','Bambu ASA','ASA','GFB01']]){
+    const f={family,colorName:'Custom color'},c={...defaults,printer,cols:1,rows:1,width:80,height:80,palette:['#123456'],filaments:[f],backingFilament:f};
+    const z=unzipSync(makeProject3mf([{row:0,col:0,name:'R01-C01',parts:tileParts(c,new Uint8Array([0]),1,1)}],c));
+    const settings=JSON.parse(strFromU8(z['Metadata/project_settings.config']));
+    assert.deepEqual(settings.filament_type,[type,type]);
+    assert.deepEqual(settings.filament_ids,[id,id]);
+    assert.ok(settings.filament_settings_id.every(name=>name.startsWith(family+' @')));
+  }
+  assert.throws(()=>validate({...defaults,printer:'a1mini',width:80,height:80,backingFilament:{family:'Bambu ASA'}}),/different filament/);
 });

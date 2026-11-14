@@ -73,3 +73,5 @@ header nav{margin-left:auto}
   .canvas-actions .segmented{flex:1;min-width:0}
   .compact-toolbar .canvas-actions .segmented button{white-space:normal;min-width:0;line-height:1.25}
 }
+
+.toggle-setting{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:15px}.toggle-setting input{accent-color:var(--green);width:16px;height:16px;margin:0}
