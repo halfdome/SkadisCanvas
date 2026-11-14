@@ -59,7 +59,7 @@ test('32 source colors survive palette extraction, labeling and native export',a
  const colors=Array.from({length:32},(_,i)=>`#${(i*527483).toString(16).padStart(6,'0')}`);
  const pixels=Uint8ClampedArray.from(colors.flatMap(rgba));
  for(const count of [4,16,32,8,32]){const source=autoPalette(pixels,count);assert.equal(source.length,count);assert.ok(source.every(x=>colors.includes(x)));}
- const c={...defaults,printer:'h3c',width:80,height:80,palette:colors,sourcePalette:colors,backing:colors[0],colorCount:32,cols:1,rows:1};
+ const c={...defaults,printer:'h3c',width:80,height:80,palette:colors,sourcePalette:colors,backing:colors[0],backingFilament:undefined,colorCount:32,cols:1,rows:1};
  validate(c);const labels=quantize(pixels,mappingPalette(c));assert.equal(new Set(labels).size,32);
  const z=unzipSync(makeProject3mf([{name:'R01-C01',row:0,col:0,parts:tileParts(c,labels,32,1,0,0)}],c));
  const settings=JSON.parse(strFromU8(z['Metadata/project_settings.config']));assert.equal(settings.filament_colour.length,32);

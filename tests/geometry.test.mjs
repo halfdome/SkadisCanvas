@@ -66,7 +66,7 @@ test('named filament selections are escaped and retained in exported 3MF',()=>{
 });
 
 test('Bambu wall export splits into two native rectangular 20-plate projects',()=>{
-  const c={...defaults,width:40,height:40,printer:'x1c'};
+  const c={...defaults,width:40,height:40,printer:'x1c',backing:defaults.palette[0],backingFilament:undefined};
   const tiles=Array.from({length:40},(_,i)=>({name:`Tile ${i+1}`,col:i%5,row:Math.floor(i/5),parts:tileParts(c,new Uint8Array([0,1,2,3]),2,2,i%5,Math.floor(i/5))}));
   const exported=exportWall(tiles,c);assert.equal(exported.format,'zip');
   const files=unzipSync(exported.data),names=Object.keys(files).filter(n=>n.endsWith('.3mf'));

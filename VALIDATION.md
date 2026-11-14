@@ -1,3 +1,15 @@
+## Dynamic cross-section, print orientation, backing and Save As — 2026-11-13
+
+- Reproduced the report in the prior browser build: changing colored layers from 3 to 8 left the diagram fixed at 23 px backing / 7 px color.
+- Browser regression checks now show 1, 3 and 8 colored strata, with color heights 2.55, 7.68 and 20.48 px in a 64 px stack for a 5 mm board at 0.2 mm/layer. Backing shrinks proportionally. At 0.1 mm/layer and 4 mm thickness, eight layers produce 0.80 mm color / 3.20 mm backing and a 20% color band. Invalid zero colored layers hides the diagram and disables export.
+- Face-up reverses the stack; the build plate remains below it. Checked desktop and 390 px mobile layout, without horizontal page overflow.
+- New sessions default to Bambu PLA Basic / Jade White. Verified this persisted after original-image upload, palette rematching and changing printer.
+- Real browser downloads: H3C face-up with 8 colored layers and X1C face-down with 3 colored layers, each an 80 × 80 × 5 mm tile. Bambu Studio CLI successfully sliced both. Inspected actual generated G-code: H3C has only white backing in layers 1–17 and all four source colors in layers 18–25; X1C has all four source colors in layers 1–3 and only white backing in layers 4–25.
+- Opened the H3C slice in Bambu Studio GUI; visually inspected top artwork at layer 25 and white backing at layer 17 (3.40 mm). Restored the original user project and Device view afterward. Did not start or modify any print job.
+- Chrome native Save As: selected outputs/validation-orientation and a custom settings-save-as-test.json filename; verified the resulting JSON and reloaded it through the app's Load settings flow. Restored grid dimensions, layer count and white backing matched. Native picker cancellation is covered by an automated test; unsupported browsers retain browser-managed downloads.
+- Production build passed. All 40 tests passed, including new orientation geometry/guide, white backing, layer alignment and save-handle tests. Existing custom-filament fixtures explicitly retain their intended backing material.
+- Evidence and executable slice validator: outputs/validation-orientation/ and scripts/validate-orientation-export.mjs. No physical print was performed. Face-up requires board thickness to be a multiple of layer height so the requested colored layer count is exact.
+
 ## Total dimensions and compact navigation — 2026-11-13
 
 - Built the production app successfully and exercised its rendered browser UI.
