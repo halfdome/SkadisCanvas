@@ -38,7 +38,7 @@ test('whole-wall exporter rejects a selected R07/C04 tile or duplicate/missing t
  assert.throws(()=>exportWall(tiles,defaults),/exactly once/);
 });
 
-test('Bambu GUI preset merge preserves explicit surface and rectangular tower settings',async()=>{
+test('Bambu GUI preserves surface settings while inheriting standard prime towers',async()=>{
  const {makeProject3mf}=await import('../lib/project3mf.mjs');const {unzipSync,strFromU8}=await import('fflate');
  for(const count of [4,8]){
   const c={...defaults,palette:original.slice(0,count),backing:original[0],cols:1,rows:1};
@@ -46,7 +46,31 @@ test('Bambu GUI preset merge preserves explicit surface and rectangular tower se
   const z=unzipSync(makeProject3mf([{name:'R01-C01',row:0,col:0,parts}],c));const settings=JSON.parse(strFromU8(z['Metadata/project_settings.config']));
   assert.equal(settings.different_settings_to_system.length,count+2);
   const overrides=new Set(settings.different_settings_to_system[0].split(';'));
-  for(const key of ['prime_tower_width','prime_tower_rib_wall','layer_height','initial_layer_print_height','bottom_shell_layers'])assert.ok(overrides.has(key));
-  assert.equal(settings.prime_tower_width,count>4?'120':'60');assert.equal(settings.prime_tower_rib_wall,'0');
+  for(const key of ['layer_height','initial_layer_print_height','bottom_shell_layers'])assert.ok(overrides.has(key));
+  assert.equal(settings.prime_tower_width,'60');assert.equal(settings.prime_tower_brim_width,'3');assert.notEqual(settings.prime_tower_rib_wall,'0');assert.notEqual(settings.prime_tower_fillet_wall,'0');for(const key of ['prime_tower_width','prime_tower_rib_wall','prime_tower_brim_width','prime_tower_fillet_wall'])assert.ok(!overrides.has(key));
  }
+});
+
+
+test('32 source colors survive palette extraction, labeling and native export',async()=>{
+ const {tileParts,validate}=await import('../lib/geometry.mjs');
+ const {makeProject3mf}=await import('../lib/project3mf.mjs');
+ const {unzipSync,strFromU8}=await import('fflate');
+ const colors=Array.from({length:32},(_,i)=>`#${(i*527483).toString(16).padStart(6,'0')}`);
+ const pixels=Uint8ClampedArray.from(colors.flatMap(rgba));
+ for(const count of [4,16,32,8,32]){const source=autoPalette(pixels,count);assert.equal(source.length,count);assert.ok(source.every(x=>colors.includes(x)));}
+ const c={...defaults,printer:'h3c',width:80,height:80,palette:colors,sourcePalette:colors,backing:colors[0],colorCount:32,cols:1,rows:1};
+ validate(c);const labels=quantize(pixels,mappingPalette(c));assert.equal(new Set(labels).size,32);
+ const z=unzipSync(makeProject3mf([{name:'R01-C01',row:0,col:0,parts:tileParts(c,labels,32,1,0,0)}],c));
+ const settings=JSON.parse(strFromU8(z['Metadata/project_settings.config']));assert.equal(settings.filament_colour.length,32);
+ assert.equal(settings.different_settings_to_system.length,34);
+ const xml=strFromU8(z['Metadata/model_settings.config']);for(let i=1;i<=32;i++)assert.ok(xml.includes(`key="extruder" value="${i}"`));
+ assert.throws(()=>autoPalette(pixels,33),/1–32/);assert.throws(()=>validate({...c,palette:[...colors,'#ff0000']}),/1–32/);
+});
+
+
+test('a chosen backing survives palette regeneration, new artwork and printer defaults',()=>{
+ const previous={backing:'#ff6a13',backingFilament:{family:'Bambu PLA Basic',colorName:'Orange'},backingLocked:true};
+ for(const source of [original.slice(0,4),original,[original[0]]]){const mapped=matchOriginalColors(source,'Bambu PLA Basic + Matte',previous);assert.equal(mapped.backing,previous.backing);assert.deepEqual(mapped.backingFilament,previous.backingFilament);}
+ assert.equal(matchOriginalColors(['#ffffff'],'Bambu PLA Basic',{...previous,backingLocked:false}).backing,'#ffffff');
 });
