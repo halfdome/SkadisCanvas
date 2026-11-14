@@ -1,3 +1,9 @@
+## Bambu lineup, filament presets and rear tile IDs — 2026-11-13
+
+- Bambu Studio 2.9.1.70 imported and sliced two labeled plates for each of 15 printer profiles. Verified the saved printer preset and 25-layer output with color on the first three layers. X2D required recognizing indented filament-switch commands in the G-code validator. Dual-nozzle placement uses the common travel area.
+- Downloaded two 2 × 2 walls from the actual browser build: A1 mini with PETG HF face-down and P2S with ASA face-up. All eight plates sliced, retained their material type, and placed the artwork only in the expected layer band. Visually inspected PETG back engraving R02-C02 and artwork in Studio Preview, and the ASA artwork and four-plate layout. Studio displayed its high-temperature nozzle-clumping warning on the ASA project.
+- All 43 tests and the production build passed. Tests cover engraving watertightness, front artwork preservation in both orientations, compatible material metadata and dual-nozzle reach. No physical prints were run. Evidence: outputs/printer-and-tile-id/.
+
 ## Customer-facing interface copy — 2026-11-13
 
 - Removed the prototype badge, browser-storage banner, promotional introduction, repeated layer summary and nonessential preview commentary. Refined labels, notifications, STL dimension guidance and the print guide; retained actionable printer, material and import information.

@@ -4,7 +4,8 @@ import assert from 'node:assert/strict';
 // Inspect actual Bambu-generated G-code, excluding tower/custom extrusion.
 export function inspectLayers(gcode){
  let z=0,tool=null,feature='Custom';const layers=new Map();
- for(const line of gcode.split('\n')){
+ for(const command of gcode.split('\n')){
+  const line=command.trimStart();
   let m;if((m=line.match(/^; Z_HEIGHT: ([\d.]+)/))){z=Number(m[1]);layers.set(z,new Set());}
   if((m=line.match(/^M620 S(\d+)A/))&&Number(m[1])<255)tool=Number(m[1]);
   if((m=line.match(/^T(\d+)(?:\s|$)/))&&Number(m[1])<255)tool=Number(m[1]);
