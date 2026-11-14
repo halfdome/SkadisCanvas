@@ -1,3 +1,13 @@
+## Total dimensions and compact navigation — 2026-11-13
+
+- Built the production app successfully and exercised its rendered browser UI.
+- Both the Board dimensions total and preview heading showed 1,000 × 1,600 mm for the default 5 × 8 grid.
+- Changed columns to 4, rows to 3, board width to 240 mm, height to 160 mm, and gap to 2 mm through the UI. Both totals updated to 966 × 484 mm; changing gap back to 0 produced 960 × 480 mm.
+- Checked 1280, 1024, and 390 px viewport widths; no horizontal page overflow. Visually inspected desktop and phone layouts.
+- Navigation measured 64 px on desktop (previously 85 px) and 60 px on mobile (previously 70 px). Desktop preview top measured 161.09 px (previously 183.59 px).
+- Screenshot: outputs/total-dimensions-desktop.png.
+- This update changes labels and layout only. No new 3MF/slicer or physical-print validation was performed; prior export validation below remains the applicable evidence.
+
 # Compact composition toolbar — 2026-11-13
 
 UI-only update: combined the composition heading, view controls and wall download into one toolbar. At 1280px desktop width, the preview begins at Y=184 instead of Y=301, reclaiming about 117px. At 390px, controls wrap without horizontal overflow. Preview switches and the relocated download button were exercised in the browser; the downloaded ZIP contained two 3MF projects with all 40 unique tiles. Production build passed. Export and geometry code are unchanged; no new slicer or physical tests were performed for this layout-only change.
