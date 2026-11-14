@@ -172,3 +172,19 @@ test('PETG and ASA export their real presets and open printers exclude enclosure
   }
   assert.throws(()=>validate({...defaults,printer:'a1mini',width:80,height:80,backingFilament:{family:'Bambu ASA'}}),/different filament/);
 });
+
+test('all layers can use the artwork palette without creating a zero-height backing',()=>{
+  for(const faceDown of [true,false])for(const thickness of [5,5.1]){
+    const c={...defaults,width:80,height:80,cols:1,rows:1,thickness,faceDown,colorLayers:Math.ceil(thickness/.2)};
+    const parts=tileParts(c,new Uint8Array([0,1,2,3]),2,2);
+    assert.equal(parts.length,4);
+    assert.ok(!parts.some(p=>p.name.startsWith('Backing')));
+    for(const part of parts){
+      closed(part);
+      assert.equal(Math.min(...part.vertices.map(v=>v[2])),0);
+      assert.equal(Math.max(...part.vertices.map(v=>v[2])),thickness);
+    }
+    assert.throws(()=>validate({...c,colorLayers:c.colorLayers+1}),/colored layers/);
+    assert.throws(()=>validate({...c,backLabel:true}),/room for the back label/);
+  }
+});

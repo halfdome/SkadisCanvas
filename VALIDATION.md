@@ -1,3 +1,9 @@
+## Full-depth color — 2026-11-13
+
+- The layer limit follows board thickness and layer height. At the maximum, the cross-section shows full-depth color, exports omit the backing volume, and engraving requires reducing the color depth.
+- Downloaded matching 80 × 80 × 5 mm H3C tiles through the browser in both orientations with all 25 layers colored. Bambu Studio sliced both; verified all four artwork colors on each of the 25 layers. Inspected the face-up project in Studio Preview. No physical print was performed.
+- The production build, 44 tests and backed-project integration checks for all 15 printers passed.
+
 ## Bambu lineup, filament presets and rear tile IDs — 2026-11-13
 
 - Bambu Studio 2.9.1.70 imported and sliced two labeled plates for each of 15 printer profiles. Verified the saved printer preset and 25-layer output with color on the first three layers. X2D required recognizing indented filament-switch commands in the G-code validator. Dual-nozzle placement uses the common travel area.
