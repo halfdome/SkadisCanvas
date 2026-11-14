@@ -65,3 +65,11 @@ body{line-height:1.5}.field>span,.hint,.filename,.select-label,.range-label{colo
 /* Keep navigation focused on the designer and its print guide. */
 header nav{margin-left:auto}
 .preview-caption{font-size:14px;letter-spacing:0;color:var(--muted)}
+
+@media(max-width:420px){
+  header{padding:0 12px;gap:12px}
+  .brand{gap:7px}.brand-mark{width:32px;font-size:36px}
+  .brand>div{font-size:22px}nav{gap:14px;font-size:14px}nav button{white-space:nowrap}
+  .canvas-actions .segmented{flex:1;min-width:0}
+  .compact-toolbar .canvas-actions .segmented button{white-space:normal;min-width:0;line-height:1.25}
+}
