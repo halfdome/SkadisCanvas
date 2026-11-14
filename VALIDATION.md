@@ -1,3 +1,10 @@
+## Skadis Canvas rename — 2026-11-13
+
+- Renamed the visible app, browser title, settings picker and export generator metadata to Skadis Canvas. Kept the Bambu Studio compatibility marker unchanged.
+- Production build and all 40 automated tests passed. Bambu Studio integration validation passed for X1C and H3C, each with two plates and three colored layers in a 25-layer board.
+- Downloaded an 80 × 80 mm H3C project through the renamed browser UI, sliced that actual download successfully in Bambu Studio, and opened the sliced result in its GUI. Inspected layer 3 at 0.60 mm: colored artwork, holes, centered tile and separate purge tower were visible.
+- Evidence: outputs/skadis-canvas.png and outputs/skadis-canvas-studio-layer3.png. No physical print was performed.
+
 ## Dynamic cross-section, print orientation, backing and Save As — 2026-11-13
 
 - Reproduced the report in the prior browser build: changing colored layers from 3 to 8 left the diagram fixed at 23 px backing / 7 px color.

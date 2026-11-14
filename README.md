@@ -1,4 +1,4 @@
-# SKÅDIS Surface Studio
+# Skadis Canvas
 
 A browser app for turning a flat-color illustration into a tiled, multicolor pegboard mural. Built with React and Vinext. Artwork processing and mesh generation run in the browser; the app does not upload images or STL files.
 
@@ -6,13 +6,13 @@ A browser app for turning a flat-color illustration into a tiled, multicolor peg
 
 Requires Node 22.13+ and pnpm. Run `pnpm install`, then `pnpm dev`. Use `pnpm build` for the production Worker build. Run `node --test tests/*.test.mjs` for geometry tests.
 
-## First prototype
+## Features
 
 - Parametric board width, height, thickness, staggered hole pitch and capsule slot dimensions.
 - Configurable rows, columns and installed gaps; defaults to 5 columns × 8 rows of 200 mm tiles with zero gap. One wall-wide hole lattice preserves spacing across seams. Shared-edge mode uses half-slots (and quarter-slots at junctions) that complete at tile seams, while keeping the outer wall perimeter closed. Multiples of the pitch give regular half-slots; arbitrary sizes retain the global lattice with asymmetrically split slots. Inset mode is also available.
-- PNG/JPEG/WebP/SVG artwork, fit/fill, zoom, positioning and 2–8 editable filament colors with palette extraction.
+- PNG/JPEG/WebP/SVG artwork, fit/fill, zoom, positioning and 1–32 source colors. Defaults to 4 colors for X1C and 8 for H3C; changing the count rebuilds the palette from the original image. Similar source colors can share a filament.
 - Whole-wall preview, tile selection and source-resolution feedback.
-- Face-down colored surface, default 3 × 0.2 mm layers with a 4.4 mm backing.
+- Face-down or face-up printing, defaulting to face-down with 3 × 0.2 mm colored layers and a 4.4 mm backing. The live cross-section reflects layer count, layer height, board thickness and orientation. Backing defaults to Bambu PLA Basic / Jade White and remains independent of surface palette rematching.
 - One native Bambu Studio 3MF for up to 36 tiles; larger murals automatically split into balanced rectangular projects, downloaded in one ZIP. Custom printers use one portable core 3MF. Selected-tile ZIP includes a 3MF, STL parts and assembly map; blank fit-test STL and project settings are also available.
 - X1C, H3C and custom-printer dimension presets, editable edge margin and rear tower reserve. Oversize boards block export. X1C/H3C exports include native Bambu Studio machine, process and filament settings for a 0.4 mm nozzle.
 - Bambu PLA Basic / PLA Matte named display-color presets; Bambu PETG HF, Bambu ABS and other brands can use custom colors. Original image colors are automatically sampled on upload and matched to Bambu PLA Basic using CIELAB distance. All suggestions remain editable. Filament selections are retained as per-part assignments in the Bambu project.
@@ -23,7 +23,7 @@ Requires Node 22.13+ and pnpm. Run `pnpm install`, then `pnpm dev`. Use `pnpm bu
 
 The image is placed once in installed-wall coordinates, including the gaps. Each tile samples its physical region and quantizes the image to the chosen palette. Horizontal pixel runs are unioned per color with polygon-clipping, intersected with the slotted board footprint, triangulated with earcut and extruded into a thin surface volume. The backing occupies the remaining thickness. Surface regions and backing share boundaries without volume overlap.
 
-Artwork rows go from top to bottom. Model Y goes from bottom to top. Face-down export rotates the model 180 degrees around Y, using `(width − x, y, thickness − z)`. This is a rotation, so triangle winding is preserved and the installed artwork reads correctly. Do not apply an additional mirror in the slicer.
+Artwork rows go from top to bottom. Model Y goes from bottom to top. Face-down export rotates the model 180 degrees around Y, using `(width − x, y, thickness − z)`. This is a rotation, so triangle winding is preserved and the installed artwork reads correctly. Do not apply an additional mirror in the slicer. Face-up export retains the artwork on top of the backing, so the colored layers print last. For face-up printing, board thickness must be a multiple of layer height to preserve the requested colored-layer count.
 
 ## Slicer workflow and current limits
 
@@ -35,7 +35,7 @@ Artwork rows go from top to bottom. Model Y goes from bottom to top. Face-down e
 
 The output is unsliced geometry with Bambu project settings for X1C/H3C. Import and slicing have been validated in Bambu Studio 2.9.1.70. Physical printing has not been tested. No wall mounts, rear standoffs, tile connectors, screw holes, load rating or structural engineering are provided. The preview uses an approximate screen raster; exported color boundaries follow the selected mm/pixel sampling. Raster upscaling cannot restore detail. Vector paths are currently rasterized too. Small clipped features may be below the nozzle’s printable width.
 
-Project JSON contains settings but not source artwork; upload the matching image when restoring settings. Browser reloads otherwise reset the project.
+Save settings as… opens a native file-location picker in compatible browsers; other browsers use their download settings. Project JSON contains settings but not source artwork; upload the matching image when restoring settings. Browser reloads otherwise reset the project.
 
 ## Next milestones
 
