@@ -4,11 +4,11 @@ import {createPortal} from 'react-dom';
 
 export const explanations={
   Printer:'Choose the printer used for size checks, available filament presets and the exported Bambu Studio project.',
-  'Board style':'Full flat board is the default configurable pegboard. Board with spacers preserves the supplied board geometry and adds adjustable rear clearance.',
+  'Board style':'Full flat board is the default configurable pegboard. Board with spacers keeps the supplied rounded and beveled style, slot and mounting-hole profiles, with adjustable dimensions and rear clearance.',
   Columns:'Number of tiles across the wall. The artwork spans all columns and rows. The wall can contain up to 100 tiles.',
   Rows:'Number of tiles from top to bottom. R01 is the top row in the preview and exported assembly map.',
-  'Board width':'Width of one tile, in millimeters. Imported board designs keep their original width to preserve their mounting geometry.',
-  'Board height':'Height of one tile, in millimeters. Imported board designs keep their original height to preserve their slot layout.',
+  'Board width':'Width of one tile, in millimeters. Spacer boards move their corner legs and regenerate the slot pattern without stretching the holes.',
+  'Board height':'Height of one tile, in millimeters. Spacer boards add or remove rows at the original slot spacing as the height changes.',
   'Board thickness':'Thickness of the flat board, including its colored surface. Rear spacer height is separate.',
   'Tile gap':'Installed space between neighboring tiles. Artwork is placed across the whole wall, including these gaps.',
   'Spacer height':'Distance from the rear of the board to the ends of its four spacers. The reference is 10 mm; choose 2–40 mm.',
@@ -36,7 +36,7 @@ export const explanations={
   'Layer height':'Thickness of one printed layer. The exported first layer and subsequent layers use this same height.',
   'Colored layers':'Number of layers used for the artwork. Color depth equals this number multiplied by layer height. Spacer volumes use the backing filament.',
   'Surface detail':'Physical size of one artwork sample. Smaller values preserve finer detail but increase export time and file size.',
-  'Engrave tile ID on the back':'Adds a recessed row/column label to the rear of a generated flat board. This needs enough backing thickness and is unavailable on the preserved spacer reference.',
+  'Engrave tile ID on the back':'Adds a recessed row/column label to the rear of a generated flat board. This needs enough backing thickness and is unavailable on the spacer board.',
   'Selected tile':'Choose a tile by its installed-wall position. Its close-up and download links appear here; R01/C01 is the top-left tile.',
   'Preview mode':'Filament preview shows matched filament colors; Extracted colors shows the reduced source palette; Original shows the uploaded image.',
   'Tile grid':'Shows or hides the boundaries between tiles in the wall preview.'

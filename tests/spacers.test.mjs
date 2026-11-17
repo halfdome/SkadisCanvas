@@ -8,7 +8,7 @@ import {referenceSolid,spacerSolid,spacerTileParts} from '../lib/spacer-geometry
 const api=await Module();api.setup();
 const bytes=readFileSync(new URL('../public/designs/spacer-reference.bin',import.meta.url));
 const reference=referenceSolid(api,bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
-const c={...chooseBoardDesign(defaults,SPACER_BOARD),cols:1,rows:1};
+const c={...chooseBoardDesign(defaults,SPACER_BOARD),height:200.0800018310547,cols:1,rows:1};
 const solidFromPart=p=>{const mesh=new api.Mesh({numProp:3,vertProperties:Float32Array.from(p.vertices.flat()),triVerts:Uint32Array.from(p.triangles.flat())});mesh.merge();return new api.Manifold(mesh);};
 
 test('spacer defaults preserve the supplied reference solid and its dimensions',()=>{
@@ -51,6 +51,48 @@ test('artwork parts and backing partition the spacer solid without overlap',()=>
   solids.forEach(s=>s.delete());
 });
 test('spacer selection rejects unsupported edits and checks the full build height',()=>{
-  for(const patch of [{spacerHeight:0},{spacerDiameter:25},{width:210},{faceDown:false},{backLabel:true}])assert.throws(()=>validate({...c,...patch}));
+  for(const patch of [{spacerHeight:0},{spacerDiameter:25},{width:40},{faceDown:false},{backLabel:true}])assert.throws(()=>validate({...c,...patch}));
   assert.throws(()=>validate({...c,printer:'custom',bedHeight:10}),/allowance/);
+});
+
+import {spacerFeet,spacerSlots} from '../lib/spacer-layout.mjs';
+test('resized spacer boards keep physical slots, mounting bores and four connected legs',()=>{
+ for(const [width,height,spacerDiameter] of [[200,200,15],[280,180,15],[120,240,20],[50,50,20],[320,288,10]]){
+  const config={...c,width,height,spacerDiameter},s=spacerSolid(api,reference,config);
+  validate(config);assert.equal(s.status(),'NoError');
+  const bounds=s.boundingBox();
+  assert.ok(Math.abs(bounds.max[0]-bounds.min[0]-width)<.001);
+  assert.ok(Math.abs(bounds.max[1]-bounds.min[1]-height)<.001);
+  const connected=s.decompose();assert.equal(connected.length,1);connected.forEach(x=>x.delete());
+  const feet=s.trimByPlane([0,0,1],5.1),legs=feet.decompose();
+  assert.equal(legs.length,4);legs.forEach(x=>x.delete());feet.delete();
+  // The source mounting bore is unchanged, translated to the new foot center.
+  const targetFeet=spacerFeet(config);
+  for(let i=0;i<targetFeet.length;i++){
+   const [x,y]=targetFeet[i],sx=i%2?187.5:12.5,sy=i>=2?187.540001:12.540001;
+   const testCylinder=api.Manifold.cylinder(15.01,3.8,3.8,32).translate([x,y,0]);
+   const shifted=reference.translate([x-sx,y-sy,0]);
+   const expected=shifted.intersect(testCylinder),actual=s.intersect(testCylinder);
+   const missing=expected.subtract(actual),extra=actual.subtract(expected);
+   assert.ok(missing.volume()<.005&&extra.volume()<.005,'mounting bore distorted');
+   [testCylinder,shifted,expected,actual,missing,extra].forEach(v=>v.delete());
+  }
+  for(const [x,y] of spacerSlots(config).slice(0,2)){
+   const box=api.Manifold.cube([12,24,5]).translate([x-6,y-12,0]);
+   const shifted=reference.translate([x-80,y-100.04,0]);
+   const expected=shifted.intersect(box),actual=s.intersect(box);
+   const missing=expected.subtract(actual),extra=actual.subtract(expected);
+   assert.ok(missing.volume()<.005&&extra.volume()<.005,'slot profile distorted');
+   [box,shifted,expected,actual,missing,extra].forEach(v=>v.delete());
+  }
+  const parts=spacerTileParts(api,s,config,new Uint8Array([0,1,2,3]),2,2),solids=parts.map(solidFromPart);
+  assert.ok(solids.every(p=>p.status()==='NoError'));
+  assert.ok(Math.abs(solids.reduce((n,p)=>n+p.volume(),0)-s.volume())<.1);
+  solids.forEach(p=>p.delete());s.delete();
+ }
+});
+test('switching board styles retains selected dimensions',()=>{
+ const resized=chooseBoardDesign({...defaults,width:280,height:180},SPACER_BOARD);
+ assert.equal(resized.width,280);assert.equal(resized.height,180);
+ const flat=chooseBoardDesign(resized,'full-flat-board');assert.equal(flat.width,280);assert.equal(flat.height,180);
 });
