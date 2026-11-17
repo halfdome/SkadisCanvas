@@ -135,3 +135,4 @@ header nav{margin-left:auto}
 .filament-rail ul{gap:4px}.filament-rail .rail-caption{white-space:nowrap;font-size:10px}
 
 .brand .release-badge{display:inline-block;vertical-align:middle;margin-left:3px;padding:1px 4px;border:1px solid #c9d5c6;border-radius:4px;background:#eef3e9;color:#4b6354;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:0;line-height:13px}
+.usage-status{display:flex;align-items:center;gap:6px;font-size:13px;line-height:1.45;color:var(--muted);margin:10px 0}.usage-status svg{flex:none}.usage-status.calculated{color:#426649}.usage-status.error{color:#9b412e}.usage-status.compact{font-size:11px;align-items:flex-start;margin:0 0 12px}.usage-status.compact svg{margin-top:1px}.usage-spinner{animation:usage-spin 1s linear infinite}.usage-heading .text-button{display:inline-flex;align-items:center;gap:6px}@keyframes usage-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.usage-spinner{animation:none}}
