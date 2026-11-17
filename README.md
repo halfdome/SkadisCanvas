@@ -1,5 +1,10 @@
 # Skadis Canvas
 
+Current release: **v1.1** (November 16, 2026).
+
+- **v1.0** — the version before November 16, 2026; tagged at `504e1fc`, the last commit before that date in the site history.
+- **v1.1** — today’s board-style and spacer controls, usability improvements, prime-tower sizing, filament estimates, and preview color mapping. Git tags preserve both release snapshots without rewriting prior commits.
+
 A browser app for turning a flat-color illustration into a tiled, multicolor pegboard mural. Built with React and Vinext. Artwork processing and mesh generation run in the browser; the app does not upload images or STL files.
 
 ## Run
