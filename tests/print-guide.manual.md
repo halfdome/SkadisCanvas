@@ -22,10 +22,20 @@ Validation for the expand-control fix: reproduced the original failure and exerc
 
 ## Expanded layout, tile export and production stages
 
-1. At 1800 × 1000 and 1280 × 1000, expand Simple and Advanced. Configuration cards use two columns in numbered reading order, with bounded diagrams; Section 05 spans both columns. Text remains readable and illustrations do not stretch to the window width.
+1. At 1800 × 1000 and 1280 × 1000, expand Simple and Advanced. Simple configuration cards use two columns in numbered reading order; Section 05 spans both columns. Advanced uses full-width chapters with parameter explanations and bounded illustrations alongside them. Text remains readable and illustrations do not stretch to the window width.
 2. At 390 × 844, repeat both modes. Cards stack in order, stage navigation wraps, and neither the dialog nor its content overflows horizontally. Restore, expand and close remain reachable.
 3. In Test, inspect the illustrated canvas → Selected tile → Export tile → Download tile path. Close the guide and open the actual Export tile menu below the canvas; verify its labels and position match the illustration.
 4. Follow Print steps below, then navigate to Assemble. Print has its own Bambu Studio hardware, material, layer, slice-preview and spool-mapping checklist; Assemble explains row/column order separately. Repeat in Advanced.
 5. Confirm switching guide modes and expanding/restoring does not change the board settings. Closing and reopening defaults to Simple.
 
 The production checklist was checked against the generated 3MF settings and Bambu's Studio documentation. Guide-only changes do not establish physical print quality; no print job is sent as part of this regression.
+
+## Advanced parameter walkthrough
+
+1. Open Simple and record its text, then switch to Advanced. Sections 01–05 contain individual parameter explanations, including Build plate settings, Hole pattern, crop positions, per-filament overrides, backing, STL dimension import and settings files. Switch back and verify Simple is unchanged.
+2. Follow each sticky section link in the expanded guide at 1440 px and 390 px. The heading must remain visible below the sticky navigation; diagrams and comparison tables must stay inside the guide without horizontal overflow. Also inspect the floating guide.
+3. Check the annotated diagrams: tower versus edge reserve; rows/columns/gap; all three board styles; spacer outer diameter versus mounting-hole diameter/inset; capsule width/height/pitch; top/down seam examples; the same image under Fill/Fit; face-down/face-up; and the same-circle detail comparison.
+4. Set 3 columns, 2 rows, 180 × 160 mm tiles and 2 mm gaps. The guide must show 544 × 322 mm. Enable solid-picture mounting spacers and choose four 0.2 mm colored layers: current cross-section must show 0.80 mm artwork, 4.20 mm backing and 15 mm overall depth with the default legs. Restore the starting controls afterward.
+5. At maximum colored layers, verify full-depth terminology and zero backing depth. With invalid layer settings, show the correction prompt rather than misleading arithmetic.
+6. Check the detail table against grid arithmetic: a 200 mm tile at 2 mm/pixel is 100 × 100; at 0.4 it is 500 × 500 and exceeds the 160,000-cell per-tile limit. Explain workload as sample cells, not promised print-time/file-size multipliers.
+7. Test, Print and Assemble remain separate and reachable in Advanced. The export-location illustrations still identify the actual Export tile and Download wall controls.
