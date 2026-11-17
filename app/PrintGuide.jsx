@@ -1,7 +1,7 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Grip, X, Maximize2} from 'lucide-react';
+import {Grip, X, Maximize2, Minimize2} from 'lucide-react';
 import ActionButton from './ActionButton.jsx';
 import BoardStylePreview from './BoardStylePreview.jsx';
 import PrintCrossSection from './PrintCrossSection.jsx';
@@ -19,24 +19,29 @@ function ExportDiagram({bambu}){return <figure><svg viewBox="0 0 270 160" role="
 function AssemblyDiagram(){return <figure><svg viewBox="0 0 270 170" role="img" aria-label="Assembly from the artwork side: R01-C01 at top left; columns increase right and rows increase down.">{[0,1].flatMap(row=>[0,1,2].map(col=><g key={`${row}-${col}`}><rect x={12+col*83} y={24+row*66} width="77" height="60" rx="4" fill={row?'#304f4a':'#e6a041'}/><text x={50+col*83} y={59+row*66} textAnchor="middle" fontSize="11" fill={row?'#fff':'#263a35'}>R0{row+1}–C0{col+1}</text></g>))}</svg><figcaption>Front view · rows ↓ · columns →</figcaption></figure>;}
 export default function PrintGuide({config:c,colors,onClose}){
  const panel=useRef(null),closeButton=useRef(null),drag=useRef(null),returnFocus=useRef(null);
- const [position,setPosition]=useState(null);
+ const [position,setPosition]=useState(null),[expanded,setExpanded]=useState(false);
  const constrain=p=>{const r=panel.current.getBoundingClientRect();return clampPopout(p,r.width,r.height,window.innerWidth,window.innerHeight);};
- const reset=()=>{const r=panel.current.getBoundingClientRect();setPosition(constrain({x:window.innerWidth-r.width-24,y:32}));};
+ useLayoutEffect(()=>{if(!expanded)setPosition(p=>p?constrain(p):p);},[expanded]);
+ const toggleExpanded=()=>{drag.current=null;setExpanded(value=>!value);};
  useEffect(()=>{
   returnFocus.current=document.activeElement;closeButton.current?.focus();
+  return()=>{if(panel.current?.contains(document.activeElement)||document.activeElement===document.body)returnFocus.current?.focus();};
+ },[]);
+ useEffect(()=>{
+  if(expanded)return;
   const resize=()=>setPosition(p=>p?constrain(p):p);
   window.addEventListener('resize',resize);
-  return()=>{window.removeEventListener('resize',resize);if(panel.current?.contains(document.activeElement)||document.activeElement===document.body)returnFocus.current?.focus();};
- },[]);
+  return()=>window.removeEventListener('resize',resize);
+ },[expanded]);
  const move=e=>{if(!drag.current||e.pointerId!==drag.current.id)return;setPosition(constrain({x:drag.current.x+e.clientX-drag.current.clientX,y:drag.current.y+e.clientY-drag.current.clientY}));};
- const start=e=>{if(e.button!==0)return;const r=panel.current.getBoundingClientRect();drag.current={id:e.pointerId,x:r.left,y:r.top,clientX:e.clientX,clientY:e.clientY};e.currentTarget.setPointerCapture(e.pointerId);e.preventDefault();};
+ const start=e=>{if(expanded||e.button!==0)return;const r=panel.current.getBoundingClientRect();drag.current={id:e.pointerId,x:r.left,y:r.top,clientX:e.clientX,clientY:e.clientY};e.currentTarget.setPointerCapture(e.pointerId);e.preventDefault();};
  const stop=()=>{drag.current=null;};
- const keys=e=>{const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!direction)return;e.preventDefault();const r=panel.current.getBoundingClientRect(),step=e.shiftKey?40:10;setPosition(constrain({x:r.left+direction[0]*step,y:r.top+direction[1]*step}));};
+ const keys=e=>{if(expanded)return;const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!direction)return;e.preventDefault();const r=panel.current.getBoundingClientRect(),step=e.shiftKey?40:10;setPosition(constrain({x:r.left+direction[0]*step,y:r.top+direction[1]*step}));};
  const layers=layerPlan(c),bambu=isBambu(c),spacers=hasSpacers(c),picture=isPictureBoard(c);
- return createPortal(<section ref={panel} className="print-guide-popout" role="dialog" aria-modal="false" aria-labelledby="print-guide-title" style={position?{left:position.x,top:position.y,right:'auto'}:undefined} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();onClose();}}}>
-  <div className="guide-popout-header"><button className="guide-drag-handle" aria-label="Move print guide" title="Drag to move. Use arrow keys when focused; Shift moves faster." onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerCancel={stop} onLostPointerCapture={stop} onKeyDown={keys}><Grip size={19}/><span><span id="print-guide-title">Print guide</span><small>Drag to move · keep designing alongside</small></span></button><ActionButton className="guide-header-button" aria-label="Reset guide position" hint="Return the print guide to the upper-right corner." onClick={reset}><Maximize2 size={18}/></ActionButton><button ref={closeButton} className="guide-header-button" aria-label="Close print guide" title="Close print guide (Esc)" onClick={onClose}><X size={20}/></button></div>
+ return createPortal(<section ref={panel} className={`print-guide-popout${expanded?' is-expanded':''}`} role="dialog" aria-modal="false" aria-labelledby="print-guide-title" style={!expanded&&position?{left:position.x,top:position.y,right:'auto'}:undefined} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();onClose();}}}>
+  <div className="guide-popout-header"><button className="guide-drag-handle" aria-label="Move print guide" disabled={expanded} title={expanded?'Restore the guide to move it.':'Drag to move. Use arrow keys when focused; Shift moves faster.'} onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerCancel={stop} onLostPointerCapture={stop} onKeyDown={keys}><Grip size={19}/><span><span id="print-guide-title">Print guide</span><small>{expanded?'Expanded reading view':'Drag to move · keep designing alongside'}</small></span></button><ActionButton className="guide-header-button" aria-label={expanded?'Restore print guide':'Expand print guide'} aria-pressed={expanded} hint={expanded?'Return to the floating guide.':'Expand the guide to fill the browser window.'} onClick={toggleExpanded}>{expanded?<Minimize2 size={18}/>:<Maximize2 size={18}/>}</ActionButton><button ref={closeButton} className="guide-header-button" aria-label="Close print guide" title="Close print guide (Esc)" onClick={onClose}><X size={20}/></button></div>
   <div className="guide-scroll" tabIndex={0} aria-label="Print guide steps">
-   <p className="guide-intro">Sections 01–05 match the left-column controls exactly. Follow them from top to bottom, then export, slice and assemble. Examples reflect your current settings.</p>
+   <p className="guide-intro"><strong>Follow the workflow below, step by step.</strong></p>
    <nav className="guide-step-nav" aria-label="Guide steps">{[[1,'01 Printer'],[2,'02 Board dimensions'],[3,'03 Artwork'],[4,'04 Color palette'],[5,'05 Print layers'],['export','Export'],['slice','Slice'],['assemble','Assemble']].map(([id,label])=><a key={id} href={`#guide-step-${id}`} title={`Jump to ${label} instructions`}>{label}</a>)}</nav>
    <Step number={1} title="Printer" visual={<ExportDiagram bambu={bambu}/>}>
     <p>Select your <strong>Printer model</strong> in <strong>Printer (Section 01)</strong>. This sets the build-volume limits and the available filament presets.</p>
