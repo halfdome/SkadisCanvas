@@ -1,0 +1,3 @@
+export default function SeamDiagram({shared}){
+  return <svg className="seam-diagram" viewBox="0 0 156 86" role="img" aria-label={shared?'Shared edge slots example: a slot crosses the boundary between two tiles.':'Inset slots example: slots sit inside neighboring tiles.'}><rect x="6" y="5" width="70" height="64" rx="4" fill="#dce7de"/><rect x="80" y="5" width="70" height="64" rx="4" fill="#dce7de"/><path d="M78 2V72" stroke="#c9834b" strokeDasharray="3 3"/>{(shared?[78]:[58,98]).map(x=><rect key={x} x={x-5} y="22" width="10" height="28" rx="5" fill="#fafbf7" stroke="#7a9183"/>)}<text x="78" y="83" textAnchor="middle" fill="#59655e" fontSize="10">Tile seam · schematic</text></svg>;
+}

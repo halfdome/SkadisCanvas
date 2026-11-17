@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1600" viewBox="0 0 1000 1600"><rect width="1000" height="1600" fill="#f0e5cf"/><circle cx="740" cy="320" r="230" fill="#e6a041"/><path d="M-80 960V640Q-80 200 300 200Q650 200 650 640V960H510V640Q510 345 300 345Q65 345 65 640V960Z" fill="#a4533b"/><path d="M-50 1170Q100 820 500 940Q860 1040 1050 700V1700H-50Z" fill="#304f4a"/><path d="M-100 1420Q320 1020 710 1270Q900 1370 1100 1230V1700H-100Z" fill="#e6a041"/><path d="M-60 1640Q250 1310 520 1470Q800 1620 1100 1420V1700H-60Z" fill="#a4533b"/><path d="M790 880V620M790 760Q680 740 680 650M790 700Q900 680 900 590" fill="none" stroke="#304f4a" stroke-width="42" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<title>Coastal sunrise — a landscape illustration for an eight-by-five mural</title>
+<rect width="1600" height="1000" fill="#f0e5cf"/>
+<circle cx="1160" cy="290" r="155" fill="#e6a041"/>
+<path d="M0 440C130 370 240 425 340 365C415 320 480 320 550 370L690 565L0 705Z" fill="#a4533b"/>
+<path d="M0 470C155 425 270 480 380 445C455 420 490 415 535 440L600 535C440 530 315 560 190 600L0 635Z" fill="#f0e5cf"/>
+<path d="M0 630C260 565 430 570 650 625S1040 670 1230 600S1490 560 1600 600V1000H0Z" fill="#304f4a"/>
+<path d="M0 745C240 660 470 700 685 755S1110 820 1320 735S1510 675 1600 705V825C1420 785 1300 900 1075 890S685 810 490 800S175 795 0 860Z" fill="#e6a041"/>
+<path d="M0 915C250 825 430 855 620 915S1015 985 1250 910S1470 865 1600 900V1000H0Z" fill="#a4533b"/>
+</svg>

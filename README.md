@@ -8,14 +8,17 @@ Requires Node 22.13+ and pnpm. Run `pnpm install`, then `pnpm dev`. Use `pnpm bu
 
 ## Features
 
+- **Full flat board** is the default board design (8 columns × 5 rows): a flat pegboard with configurable slots. Saved settings include its design identifier; older settings files use this default.
+
+- **Board with spacers** preserves the supplied 200 × 200.08 mm mesh, including the original outline, slots, and mounting-hole profiles. Defaults are 10 mm spacer height and 15 mm outer diameter; height is adjustable from 2–40 mm and diameter from 10–20 mm. Only the rear spacer section changes; board dimensions and face-down orientation are fixed. Back engraving is currently available on the full flat board only. The reference is unsliced geometry; slicer reinforcement modifiers from the uploaded project are not part of the board shape.
 - Parametric board width, height, thickness, staggered hole pitch and capsule slot dimensions.
-- Configurable rows, columns and installed gaps; defaults to 5 columns × 8 rows of 200 mm tiles with zero gap. One wall-wide hole lattice preserves spacing across seams. Shared-edge mode uses half-slots (and quarter-slots at junctions) that complete at tile seams, while keeping the outer wall perimeter closed. Multiples of the pitch give regular half-slots; arbitrary sizes retain the global lattice with asymmetrically split slots. Inset mode is also available.
+- Configurable rows, columns and installed gaps; defaults to 8 columns × 5 rows of 200 mm tiles with zero gap. One wall-wide hole lattice preserves spacing across seams. Shared-edge mode uses half-slots (and quarter-slots at junctions) that complete at tile seams, while keeping the outer wall perimeter closed. Multiples of the pitch give regular half-slots; arbitrary sizes retain the global lattice with asymmetrically split slots. Inset mode is also available.
 - PNG/JPEG/WebP/SVG artwork, fit/fill, zoom, positioning and 1–32 source colors. Defaults to 8 colors for H3C and 4 for other Bambu models; changing the count rebuilds the palette from the original image. Similar source colors can share a filament.
-- Whole-wall preview, tile selection and source-resolution feedback.
+- Landscape coastal sample, whole-wall preview, temporary selection masking, a selected-tile close-up and source-resolution feedback. The print cross-section uses only filament colors actually present in that tile’s exported surface geometry. Controls include keyboard-accessible help bubbles; seam alignment includes an explanatory diagram.
 - Face-down or face-up printing, defaulting to face-down with 3 × 0.2 mm colored layers and a 4.4 mm backing. The live cross-section reflects layer count, layer height, board thickness and orientation. Backing defaults to Bambu PLA Basic / Jade White and remains independent of surface palette rematching.
 - One native Bambu Studio 3MF for up to 36 tiles; larger murals automatically split into balanced rectangular projects, downloaded in one ZIP. Custom printers use one portable core 3MF. Selected-tile ZIP includes a 3MF, STL parts and assembly map; blank fit-test STL and project settings are also available.
 - Native Bambu Studio 0.4 mm presets for H3C, X1C, H2C, H2D, H2D Pro, H2S, X2D, X1E, X1, P2S, P1S, P1P, A2L, A1 and A1 mini. Board limits account for nozzle reach, cutter clearance and the prime tower.
-- Named Bambu filament swatches and machine-specific slicer presets for PLA Basic, Matte, Tough+, Silk+ and CF; PETG Basic, HF, Matte, Translucent and CF; ABS, ABS-GF, ASA and ASA-CF. The available choices depend on the printer. Use one base material across the surface and backing for easier print setup.
+- Named Bambu filament swatches and machine-specific slicer presets for PLA Basic, Matte, Tough+, Silk+ and CF; PETG Basic, HF, Matte, Translucent and CF; ABS, ABS-GF, ASA and ASA-CF. Combined matching ranges include Basic + Matte, all PLA, PETG Basic + HF, and all PETG. The available choices depend on the printer. Use one base material across the surface and backing for easier print setup.
 - Color depth can cover every layer; at full depth the artwork colors extend through the tile with no separate backing.
 - Optional recessed rear tile IDs such as R02-C03. Engraving requires a separate backing. IDs use the same installed-wall coordinates as the 3MF plate names and assembly map.
 - ASCII/binary STL inspection and optional bounding-box dimensions. Imported mesh geometry is not used.
@@ -35,15 +38,15 @@ Artwork rows go from top to bottom. Model Y goes from bottom to top. Face-down e
 4. Use the configured first and subsequent layer heights. Inspect the colored layers and small features before printing.
 5. Print one test before committing to the whole wall.
 
-The output is unsliced geometry with machine-specific Bambu project settings. Import and slicing have been validated in Bambu Studio 2.9.1.70. Physical printing has not been tested. No wall mounts, rear standoffs, tile connectors, screw holes, load rating or structural engineering are provided. The preview uses an approximate screen raster; exported color boundaries follow the selected mm/pixel sampling. Raster upscaling cannot restore detail. Vector paths are currently rasterized too. Small clipped features may be below the nozzle’s printable width.
+The output is unsliced geometry with machine-specific Bambu project settings. Import and slicing have been validated in Bambu Studio 2.9.1.70. Physical printing has not been tested. The full flat board has no rear spacers or mounting holes. The spacer reference preserves its existing spacers and mounting-hole geometry. Mounting hardware, tile connectors, load rating and structural engineering are not provided. The preview uses an approximate screen raster; exported color boundaries follow the selected mm/pixel sampling. Raster upscaling cannot restore detail. Vector paths are currently rasterized too. Small clipped features may be below the nozzle’s printable width.
 
 Save settings as… opens a native file-location picker in compatible browsers; other browsers use their download settings. Project JSON contains settings but not source artwork; upload the matching image when restoring settings. Browser reloads otherwise reset the project.
 
 ## Next milestones
 
 - Test fit and face opacity on a small print; tune slot tolerance and colored-layer count.
-- Add calibrated mounting, standoffs and panel connectors.
-- Preserve flat uploaded template geometry using mesh slicing/booleans.
+- Physically validate the reference spacer design and add calibrated mounting or panel connectors as needed.
+- Extend the curated reference-design approach to arbitrary uploaded templates with explicit face selection.
 - Trace vector color regions for smoother, more efficient illustration exports.
 - Consider an OpenSCAD board-only edition for MakerWorld Customizer after the core print workflow is proven.
 
@@ -74,4 +77,4 @@ Run `pnpm test` for geometry, seam, material, rectangular partition membership, 
 
 These checks establish import and slicing behavior. Physical print quality, color accuracy, layer adhesion, mounting, and accessory fit still require a test print.
 
-For browser regression validation, upload `tests/fixtures/original-colors.svg`, keep the default 5×8 wall, and export each printer version (use the largest-size button for H3C). The upload must suggest Bambu Green, Yellow, Red and Cyan without clicking the match button. Pass each downloaded ZIP to `node scripts/validate-browser-export.mjs /path/to/download.zip outputs/validation/browser-x1c` (or `browser-h3c`). This uses the actual downloaded bytes, slices all 40 plates across both rectangular files, checks tile coverage and original wall coordinates, and verifies the surface/backing layers in the resulting G-code. Open a representative file in the GUI too; CLI success does not replace visual inspection.
+For browser regression validation, upload `tests/fixtures/original-colors.svg`, keep the default 8×5 wall, and export each printer version (use the largest-size button for H3C). The upload must suggest Bambu Green, Yellow, Red and Cyan without clicking the match button. Pass each downloaded ZIP to `node scripts/validate-browser-export.mjs /path/to/download.zip outputs/validation/browser-x1c` (or `browser-h3c`). This uses the actual downloaded bytes, slices all 40 plates across both rectangular files, checks tile coverage and original wall coordinates, and verifies the surface/backing layers in the resulting G-code. Open a representative file in the GUI too; CLI success does not replace visual inspection.
