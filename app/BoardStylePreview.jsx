@@ -6,7 +6,7 @@ export default function BoardStylePreview({config:c}) {
   const project=([x,y])=>[110+.85*x-.5*y,65+.24*x+.39*y];
   const corners=[[18,18],[142,18],[18,142],[142,142]].map(project).sort((a,b)=>a[1]-b[1]);
   return <figure className="board-style-preview">
-    <svg viewBox="0 0 290 186" role="img" aria-label={spacers?`Board with four hollow rear spacers, ${c.spacerHeight} mm high and ${c.spacerDiameter} mm in diameter. Rear view schematic.`:picture?`Solid picture board with ${c.mountHoles?'four corner mounting holes':'no holes'} and no spacers. Rear view schematic.`:'Full flat board with a flat back and no spacers. Rear view schematic.'}>
+    <svg viewBox="0 0 290 186" role="img" aria-label={spacers?`Board with four hollow rear spacers, ${c.spacerHeight} mm high and ${c.spacerDiameter} mm in diameter. Rear view schematic.`:picture?`Solid picture board with ${c.mountHoles?'four mounting holes':'no holes'} and no spacers. Rear view schematic.`:'Full flat board with a flat back and no spacers. Rear view schematic.'}>
       <path d="M30 134L167 173L249 108L112 68Z" fill="#263a3510"/>
       <g transform="matrix(.85 .24 -.5 .39 110 65)">
         <path d="M0 0H160V160H0Z" transform="translate(0 9)" fill="#829888"/>
