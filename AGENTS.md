@@ -7,3 +7,5 @@ For export or geometry changes, run the geometry tests and the actual Bambu Stud
 Always commit completed changes and push them to https://github.com/halfdome/SkadisCanvas (the user's required GitHub repository). Verify the commit is present on GitHub before reporting that the work is finished. Publishing to the Sites source repository does not replace the GitHub push. Preserve existing remote changes and never force-push without explicit authorization. If the GitHub destination is not configured or known, obtain the repository URL rather than guessing.
 
 Publish the updated service and refresh the live page after completing the requested changes, unless the user requests local-only work.
+
+Create focused commits with descriptive messages before running the Sites publishing helper, so publication does not create generic "Update Site source" commits. Keep the existing commit history; do not squash or rewrite published commits without explicit user authorization.
