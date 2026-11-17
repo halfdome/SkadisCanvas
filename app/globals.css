@@ -118,3 +118,7 @@ header nav{margin-left:auto}
 @media(max-width:1000px){.lower-panel>.tile-filaments{border-left:0;border-top:1px solid var(--line);padding:18px 0 0}}
 
 .undo-custom{margin-top:10px}.help-bubble{max-width:calc(100vw - 16px)}
+
+/* Comparable settings actions use one type scale and button rhythm. */
+.controls .text-button,.controls summary,.project-actions button,.crop-toggle,.upload strong{font-family:inherit;font-size:14px;font-weight:550;line-height:1.4}
+.controls .text-button,.controls summary,.project-actions button{min-height:40px;padding:8px 11px}
