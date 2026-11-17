@@ -22,3 +22,9 @@ test('PLA/PETG incompatibility includes backing and all PLA/PETG variants',()=>{
  assert.equal(filamentWarnings({...c,backingFilament:{family:'Bambu PETG Basic'}}).plaPetg,false);
  assert.equal(filamentWarnings({...c,palette:['#ffffff','#000000'],filaments:[{family:'Bambu PETG-CF'},{family:'Bambu PLA-CF'}],backingFilament:{family:'Bambu PETG HF'}}).plaPetg,true);
 });
+test('material alerts ignore unused assignments after usage is known',()=>{
+ const c={palette:['#ffffff'],filaments:[{family:'Bambu PETG HF'}],backingFilament:{family:'Bambu PLA Basic'}};
+ assert.equal(filamentWarnings(c,[{family:'Bambu PETG HF',volume:100},{family:'Bambu PLA Basic',volume:0}]).plaPetg,false);
+ assert.equal(filamentWarnings(c,[{family:'Bambu PLA Basic',volume:100},{family:'Bambu PLA Matte',volume:20}]).mixed,false);
+ assert.equal(filamentWarnings(c,[{family:'Bambu PETG HF',volume:100},{family:'Bambu PLA Basic',volume:1}]).plaPetg,true);
+});
