@@ -39,3 +39,33 @@ test('picture boards can retain back labels without intersecting corner holes',(
  const c={...base,backLabel:true,mountHoles:true};const parts=tileParts(c,new Uint8Array([0]),1,1).map(solid);
  assert.ok(parts.every(p=>p.status()==='NoError'));parts.forEach(p=>p.delete());
 });
+
+test('picture spacers reuse four hollow reference legs without introducing hook slots',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const {choosePictureSpacers,hasSpacers}=await import('../lib/board-designs.mjs');
+ const {referenceSolid,spacerSolid,spacerTileParts}=await import('../lib/spacer-geometry.mjs');
+ const {spacerFeet}=await import('../lib/spacer-layout.mjs');
+ const bytes=readFileSync(new URL('../public/designs/spacer-reference.bin',import.meta.url));
+ const reference=referenceSolid(api,bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
+ for(const [width,height,spacerHeight,spacerDiameter] of [[120,80,10,15],[200,200.0800018310547,2,10],[280,160,20,20]])for(const mountHoles of [false,true]){
+  const c={...choosePictureSpacers({...base,faceDown:false,backLabel:true},true),width,height,spacerHeight,spacerDiameter,mountHoles};
+  validate(c);assert.ok(hasSpacers(c));assert.equal(c.faceDown,true);assert.equal(c.backLabel,false);assert.equal(c.thickness,5);
+  const board=spacerSolid(api,reference,c);assert.equal(board.status(),'NoError');
+  assert.equal(board.decompose().length,1);assert.ok(Math.abs(board.boundingBox().max[2]-(5+spacerHeight))<.01);
+  const legs=board.trimByPlane([0,0,1],5.1);const components=legs.decompose();assert.equal(components.length,4);components.forEach(p=>p.delete());legs.delete();
+  const central=api.Manifold.cube([width-40,height-40,5]).translate([20,20,0]);const missing=central.subtract(board);assert.ok(missing.isEmpty(),'No hook holes in the picture surface');central.delete();missing.delete();
+  for(const [x,y] of spacerFeet(c)){
+   const probe=api.Manifold.cylinder(4.8,1,1,24).translate([x,y,.1]);const cut=probe.intersect(board);
+   assert.equal(cut.isEmpty(),mountHoles,'Through holes are optional and align with each leg');probe.delete();cut.delete();
+   const hollow=api.Manifold.cylinder(spacerHeight-.2,1,1,24).translate([x,y,5.1]);const inside=board.intersect(hollow);assert.ok(inside.isEmpty());hollow.delete();inside.delete();
+  }
+  const parts=spacerTileParts(api,board,c,new Uint8Array([0,1,2,3]),2,2).map(solid);
+  assert.ok(parts.every(p=>p.status()==='NoError'));
+  assert.ok(Math.abs(parts.reduce((sum,p)=>sum+p.volume(),0)-board.volume())<.1);
+  parts.forEach(p=>p.delete());board.delete();
+ }
+ reference.delete();
+ const on=choosePictureSpacers(base,true),off=choosePictureSpacers(on,false);
+ assert.notEqual(usageConfigKey(base),usageConfigKey(on));assert.equal(hasSpacers(off),false);assert.equal(boardDepth(off),5);
+ assert.equal(chooseBoardDesign(on,'full-flat-board').boardDesign,'full-flat-board');assert.equal(hasSpacers(chooseBoardDesign(on,'full-flat-board')),false);
+});

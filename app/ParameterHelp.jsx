@@ -4,10 +4,11 @@ import {createPortal} from 'react-dom';
 
 export const explanations={
   Printer:'Choose the printer used for size checks, available filament presets and the exported Bambu Studio project.',
-  'Mounting holes':'Add four straight through-holes to every solid picture tile, one near each corner. Off gives a completely unbroken picture surface.',
+  'Mounting spacers':'Add the same four hollow rear legs as Board with spacers, with adjustable height and outer diameter. Uses a 5 mm board and face-down printing. Mounting holes remain optional.',
+  'Mounting holes':'Add four straight through-holes to every solid picture tile, one near each corner. Off gives a completely unbroken picture surface. With spacers enabled, holes use the reference bore profile and align with the legs.',
   'Mounting-hole diameter':'Diameter of each circular through-hole. Choose a size appropriate for your mounting hardware; no countersink is added.',
   'Mounting-hole inset':'Distance from each tile edge to the center of the corner mounting hole. Leave enough material around each hole.',
-  'Board style':'Full flat board is the default configurable pegboard. Board with spacers keeps the supplied rounded and beveled style, slot and mounting-hole profiles, with adjustable dimensions and rear clearance. Solid picture board has no hook slots or spacers, with optional mounting holes.',
+  'Board style':'Full flat board is the default configurable pegboard. Board with spacers keeps the supplied rounded and beveled style, slot and mounting-hole profiles, with adjustable dimensions and rear clearance. Solid picture board has no hook slots, with optional mounting holes and rear spacers.',
   Columns:'Number of tiles across the wall. The artwork spans all columns and rows. The wall can contain up to 100 tiles.',
   Rows:'Number of tiles from top to bottom. R01 is the top row in the preview and exported assembly map.',
   'Board width':'Width of one tile, in millimeters. Spacer boards move their corner legs and regenerate the slot pattern without stretching the holes.',
