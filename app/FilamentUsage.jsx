@@ -7,7 +7,7 @@ export const length=m=>`${m.toFixed(1)} m`;
 export function UsageNote({usage}){return <p className="usage-note">{usageAssumptions}{usage?.materials.some(m=>m.assumedDensity)&&' Custom filaments assume PLA density (1.24 g/cm³) and 1.75 mm diameter.'}</p>;}
 export function UsageStatus({estimate,compact=false}){
  const working=['pending','calculating'].includes(estimate.phase);
- const text=compact&&estimate.phase==='paused'?'Calculation paused':compact&&estimate.phase==='error'?'Calculation failed':estimate.text;
+ const text=compact&&estimate.phase==='paused'?'Calculation paused':estimate.text;
  return <p className={`usage-status ${estimate.phase}${compact?' compact':''}`} role="status" aria-atomic="true">{working?<LoaderCircle size={14} className="usage-spinner" aria-hidden="true"/>:estimate.phase==='calculated'?<Check size={14} aria-hidden="true"/>:null}{text}</p>;
 }
 export function UsageAction({estimate,compact=false}){
