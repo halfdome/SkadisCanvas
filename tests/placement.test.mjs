@@ -5,13 +5,13 @@ import {plateLayout,printerLimits} from '../lib/printers.mjs';
 import {makeProject3mf} from '../lib/project3mf.mjs';
 import {unzipSync,strFromU8} from 'fflate';
 
-test('small tiles are exactly centered on every native build plate',()=>{
+test('small tiles stay horizontally centered with only necessary tower clearance',()=>{
  for(const printer of ['x1c','h3c']){
   const c={...defaults,printer,width:80,height:80},p=printerLimits(c);
   const tiles=Array.from({length:20},(_,i)=>({name:`Tile ${i}`,row:Math.floor(i/5),col:i%5,parts:tileParts(c,new Uint8Array([0,1,2,3]),2,2,i%5,Math.floor(i/5))}));
   const z=unzipSync(makeProject3mf(tiles,c)),model=strFromU8(z['3D/3dmodel.model']);
   const items=[...model.matchAll(/<item[^>]*transform="([^"]+)"/g)];assert.equal(items.length,20);
-  items.forEach(([_,transform],i)=>{const a=transform.split(' ').map(Number);assert.ok(Math.abs(a[9]-(i%5)*p.width*1.2+c.width/2-p.width/2)<1e-5);assert.ok(Math.abs(a[10]+Math.floor(i/5)*p.depth*1.2+c.height/2-p.depth/2)<1e-5);});
+  items.forEach(([_,transform],i)=>{const a=transform.split(' ').map(Number);assert.ok(Math.abs(a[9]-(i%5)*p.width*1.2+c.width/2-p.width/2)<1e-5);const y=a[10]+Math.floor(i/5)*p.depth*1.2;assert.ok(Math.abs(y+c.height/2-p.depth/2)<=3);const t=plateLayout(c).tower;assert.ok(y+c.height<=t.y-t.brim-t.gap||y>=t.y+t.height+t.brim+t.gap||a[9]-(i%5)*p.width*1.2+c.width<=t.x-t.brim-t.gap);});
  }
 });
 
@@ -36,7 +36,7 @@ test('tower clearance grows with colors and thinner layers, retaining stock geom
 
 test('maximum-height H3C boards use compact towers without reducing tile size',()=>{
  const c={...defaults,printer:'h3c',width:320,height:270};
- const p=printerLimits(c),l=plateLayout(c);assert.equal(p.usableDepth,270);assert.ok(l.tower.compact);
+ const p=printerLimits(c),l=plateLayout(c);assert.equal(p.usableDepth,288);assert.ok(l.tower.compact);
  assert.equal(l.x,5);assert.ok(l.y+c.height<=l.tower.y-l.tower.gap);assert.ok(l.y+c.height<=p.depth-p.margin);
 });
 
@@ -55,4 +55,18 @@ test('explicit tower styles survive 3MF export and do not silently fall back',()
  assert.equal(plateLayout({...large,primeTowerStyle:'wall'}).tower.compact,true);
  assert.throws(()=>plateLayout({...large,primeTowerStyle:'standard'}),/standard prime tower/);
  assert.throws(()=>printerLimits({...large,primeTowerStyle:'invalid'}),/valid prime tower style/);
+});
+
+
+test('automatic reservation increases H3C pitch-aligned height while honoring explicit margins',()=>{
+ const c={...defaults,printer:'h3c',primeTowerStyle:'wall'},p=printerLimits(c);
+ assert.equal(Math.floor(p.usableDepth/c.pitch)*c.pitch,280);
+ assert.equal(printerLimits({...c,towerReserve:40}).usableDepth,270);
+ const max={...c,width:320,height:280},l=plateLayout(max),t=l.tower;
+ assert.equal(t.gap,3);
+ assert.ok(l.y+max.height<=t.y-t.frontPad-t.gap);
+ assert.ok(t.y+t.height<=p.reach.rear-p.margin);
+ const taller=printerLimits({...c,thickness:20});assert.ok(taller.compactTower.height>=p.compactTower.height);
+ const mono={...c,palette:['#ffffff'],filaments:[c.backingFilament],backing:'#ffffff'};
+ assert.equal(printerLimits(mono).reserve,0);assert.equal(plateLayout(mono).tower,null);
 });

@@ -17,7 +17,7 @@ export const explanations={
   'Bed depth':'Printer build plate depth, from front to back.',
   'Build height':'Maximum printable height, including both the board and any rear spacers.',
   'Edge / brim margin':'Space reserved around the build plate for edge clearance and a possible brim.',
-  'Minimum tower clearance':'Minimum space reserved for the purge tower. Extra space is reserved automatically when the selected colors need a larger tower.',
+  'Minimum tower clearance':'Minimum total depth reserved for the tower area. Leave at 0 to calculate it from the tower style, colors and layer height, with a sizing buffer and 3 mm separation. Larger values reserve extra space.',
   'Seam alignment':'Shared edge slots follow one wall-wide pattern and can cross tile seams. Inset slots shift that pattern inward. Board dimensions and pitch affect the exact result.',
   'Slot width':'Width of each capsule-shaped pegboard opening. Changing this affects accessory fit.',
   'Slot height':'Overall height of each capsule-shaped opening, including its rounded ends.',

@@ -54,10 +54,10 @@ test('generic project 3MF contains all 40 named tile assemblies',()=>{
 test('X1C and H3C limits include margin, tower reserve and cutter allowance',async()=>{
   const {printerLimits}=await import('../lib/printers.mjs');
   const x={...defaults,printer:'x1c'},h={...defaults,printer:'h3c'};
-  assert.equal(printerLimits(x).usableWidth,228);assert.equal(printerLimits(x).usableDepth,206);
-  assert.equal(printerLimits(h).usableWidth,320);assert.equal(printerLimits(h).usableDepth,270);
+  assert.equal(printerLimits(x).usableWidth,228);assert.equal(printerLimits(x).usableDepth,220);
+  assert.equal(printerLimits(h).usableWidth,320);assert.equal(printerLimits(h).usableDepth,288);
   assert.throws(()=>validate({...x,width:240}),/allowance/);validate({...h,width:320,height:240});
-  assert.throws(()=>validate({...h,height:280}),/allowance/);assert.throws(()=>validate({...x,bedMargin:-1}));
+  assert.throws(()=>validate({...h,height:300}),/allowance/);assert.throws(()=>validate({...x,bedMargin:-1}));
   validate({...defaults,printer:'custom',bedWidth:180,bedDepth:180,width:120,height:120});
 });
 test('named filament selections are escaped and retained in exported 3MF',()=>{
