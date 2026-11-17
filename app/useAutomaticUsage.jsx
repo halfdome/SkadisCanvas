@@ -8,7 +8,7 @@ export default function useAutomaticUsage(config,image,error){
   useEffect(()=>{
     if(!image||error)return;
     const input={key,image,attempt};
-    const cleanup=startUsageCalculation({config:JSON.parse(key),image,sampleTile,createWorker:()=>new GeometryWorker(),onChange:state=>setResult({...input,...state})});
+    const cleanup=startUsageCalculation({config:structuredClone(config),image,sampleTile,createWorker:()=>new GeometryWorker(),onChange:state=>setResult({...input,...state})});
     stop.current=cleanup;
     return cleanup;
   },[key,image,error,attempt]);
