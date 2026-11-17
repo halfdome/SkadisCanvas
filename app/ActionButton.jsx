@@ -4,7 +4,7 @@ import {createPortal} from 'react-dom';
 
 const hints={
   'Print guide':'Open the artwork, export, slicing and assembly instructions.',
-  'Use maximum tile size':'Set a flat board to the largest pitch-aligned size that fits the printer after tower and margin allowances. Spacer boards retain their reference dimensions.',
+  'Use maximum tile size':'Set a flat board to the largest whole-millimeter size that fits after tower and margin allowances. Dimensions need not be multiples of the slot pitch. Spacer boards retain their reference dimensions.',
   'Build plate settings':'Show printer dimensions, edge margins and space reserved for the prime tower.',
   'Reset spacers':'Restore each spacer leg to 10 mm height and 15 mm outer diameter.',
   'Hole pattern':'Show the slot width, slot height and spacing controls for flat boards.',
