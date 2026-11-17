@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import {validateSliced} from './validate-sliced.mjs';
 import {printerLimits} from '../lib/printers.mjs';
 import {validateTowerClearance} from './validate-tower-clearance.mjs';
+import {slicedPlates} from './sliced-plates.mjs';
 // Requires a local Bambu Studio installation. Exits nonzero on import, slicing,
 // normative G-code validation, or incorrect colored/backing layers.
 const studio=process.env.BAMBU_STUDIO||'/Applications/BambuStudio.app/Contents/MacOS/BambuStudio';
@@ -23,15 +24,18 @@ for(const printer of Object.keys(profiles).filter(key=>!process.argv[2]||process
  const tiles=Array.from({length:2},(_,col)=>({name:`R01-C0${col+1}`,row:0,col,parts:tileParts(c,Uint8Array.from({length:c.palette.length},(_,i)=>i),c.palette.length===4?2:4,2,col,0)}));
  const dir=path.join(root,(process.env.PRIME_TOWER_STYLE?`${printer}-tower-${process.env.PRIME_TOWER_STYLE}`:printer)+(process.env.MAX_TILE?'-max':'')+(process.env.SURFACE_COLORS?`-${c.palette.length}colors-${c.layerHeight}mm`:''));mkdirSync(dir,{recursive:true});
  const input=path.join(dir,'fixture.3mf'),output=path.join(dir,'sliced.3mf');writeFileSync(input,makeProject3mf(tiles,c));
- const run=spawnSync(studio,['--debug','2','--slice','0','--export-3mf',output,input],{cwd:dir,encoding:'utf8',timeout:180000,maxBuffer:8e6});
+ const gcodeOnly=process.env.BAMBU_GCODE_ONLY==='1';
+ const run=spawnSync(studio,['--debug','2','--slice','0',...(gcodeOnly?['--outputdir',dir]:['--export-3mf',output]),input],{cwd:dir,encoding:'utf8',timeout:180000,maxBuffer:8e6});
  writeFileSync(path.join(dir,'bambu.log'),(run.stdout||'')+(run.stderr||''));
  if(run.error||run.status!==0)throw Error(`${printer}: slicer failed (${run.status??run.signal}). See ${dir}/bambu.log. ${run.error||''}`);
+ if(gcodeOnly){for(const [,code] of slicedPlates(dir))assert.ok(code.includes(`; printer_settings_id = ${profiles[printer].machineId}`));}else{
  const sliced=unzipSync(readFileSync(output));
  const exported=JSON.parse(strFromU8(sliced['Metadata/project_settings.config']));
- assert.equal(exported.printer_settings_id,profiles[printer].machineId);
- const report=validateSliced(output,{colors:c.palette.length,layerHeight:c.layerHeight});
+ assert.equal(exported.printer_settings_id,profiles[printer].machineId);}
+ const report=validateSliced(gcodeOnly?dir:output,{colors:c.palette.length,layerHeight:c.layerHeight});
  assert.equal(report.plates,2);
- validateTowerClearance(output,c);
+ const clearance=validateTowerClearance(gcodeOnly?dir:output,c);
+ console.log('Minimum measured tower gap (mm):',Math.min(...clearance.map(p=>p.gap)).toFixed(3));
  console.log(printer,report);
 
 }

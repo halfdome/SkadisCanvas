@@ -1,14 +1,13 @@
-import {readFileSync} from 'node:fs';
-import {unzipSync,strFromU8} from 'fflate';
+import {slicedPlates} from './sliced-plates.mjs';
 import assert from 'node:assert/strict';
 import {plateLayout,printerLimits} from '../lib/printers.mjs';
 
 // Measure actual sliced tower extrusion paths, not only the planned rectangle.
 export function validateTowerClearance(file,c){
- const zip=unzipSync(readFileSync(file)),layout=plateLayout(c),p=printerLimits(c),reports=[];
- for(const [name,data] of Object.entries(zip).filter(([n])=>/^Metadata\/plate_\d+\.gcode$/.test(n))){
+ const layout=plateLayout(c),p=printerLimits(c),reports=[];
+ for(const [name,code] of slicedPlates(file)){
   let feature='',x=null,y=null;const points=[];
-  for(const line of strFromU8(data).split('\n')){
+  for(const line of code.split('\n')){
    if(line.startsWith('; FEATURE: '))feature=line.slice(11);
    if(!/^G[0123] /.test(line))continue;
    const xx=line.match(/\bX(-?[\d.]+)/),yy=line.match(/\bY(-?[\d.]+)/);
