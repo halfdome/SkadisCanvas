@@ -116,3 +116,5 @@ header nav{margin-left:auto}
 /* Keep print settings and their explanation together. */
 .controls .layer-panel{border-top:1px solid #c5d0bf;margin-top:22px;padding-top:18px}.controls .layer-panel p{color:var(--muted);line-height:1.5}.fixed-orientation{font-size:14px;color:var(--ink);padding:7px 9px;background:#edf3e9;border-radius:5px}.lower-panel>.tile-filaments{padding:0 0 0 23px;border-top:0;border-left:1px solid var(--line)}.usable-area small{font-size:12px}.lower-panel>.tile-filaments h4{font-size:13px;letter-spacing:1.7px}
 @media(max-width:1000px){.lower-panel>.tile-filaments{border-left:0;border-top:1px solid var(--line);padding:18px 0 0}}
+
+.undo-custom{margin-top:10px}.help-bubble{max-width:calc(100vw - 16px)}
