@@ -23,7 +23,7 @@ export function WallDimensionsDiagram({config:c}){
   <text transform="translate(18 103) rotate(-90)" textAnchor="middle" fontSize="12">Rows ↓</text>
   <path d="M118 175V190m10-15v15m-10-7h10" stroke="#c9834b"/>
   <text x="140" y="188" fontSize="12">Tile gap</text>
- </svg><figcaption>Current wall: <strong>{width.toLocaleString()} × {height.toLocaleString()} mm</strong><br/>{c.cols} columns × {c.rows} rows · {c.gap} mm gaps</figcaption></figure>;
+ </svg><figcaption>Grid schematic<br/>Current wall: <strong>{width.toLocaleString()} × {height.toLocaleString()} mm</strong><br/>{c.cols} columns × {c.rows} rows · {c.gap} mm gaps</figcaption></figure>;
 }
 
 export function MountingDiagram(){return <figure><svg viewBox="0 0 320 300" role="img" aria-label="Spacer side view: height is rear clearance, diameter is the outer width of a leg. Mounting-hole front view: inset runs from either tile edge to the hole center, and hole diameter is the opening width.">
