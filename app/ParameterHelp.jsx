@@ -23,7 +23,7 @@ export const explanations={
   'Slot height':'Overall height of each capsule-shaped opening, including its rounded ends.',
   'Pattern pitch':'Distance between repeated slots in a row. Alternating rows are offset by half this spacing.',
   'Artwork placement':'Fill canvas covers the wall and crops excess artwork. Fit artwork keeps the whole image visible; uncovered areas use the backing color.',
-  Scale:'Enlarges or reduces the artwork relative to the wall. This changes the crop, not the physical board dimensions.',
+  Scale:'Enlarges or reduces the artwork relative to the wall. This changes the crop, not the physical board dimensions. You can also scroll over the preview in Original or Adjust artwork mode.',
   'Adjust artwork':'Drag the artwork in the wall preview, or use the horizontal and vertical position controls. Finish adjusting to select tiles again.',
   'Horizontal position':'Moves the artwork left or right within its available crop. At an exact fit there may be no horizontal movement.',
   'Vertical position':'Moves the artwork up or down within its available crop. At an exact fit there may be no vertical movement.',
