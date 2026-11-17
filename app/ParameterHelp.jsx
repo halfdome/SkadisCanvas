@@ -4,7 +4,7 @@ import {createPortal} from 'react-dom';
 
 export const explanations={
   Printer:'Choose the printer used for size checks, available filament presets and the exported Bambu Studio project.',
-  'Board design':'Full flat board is the default configurable pegboard. Board with spacers preserves the supplied board geometry and adds adjustable rear clearance.',
+  'Board style':'Full flat board is the default configurable pegboard. Board with spacers preserves the supplied board geometry and adds adjustable rear clearance.',
   Columns:'Number of tiles across the wall. The artwork spans all columns and rows. The wall can contain up to 100 tiles.',
   Rows:'Number of tiles from top to bottom. R01 is the top row in the preview and exported assembly map.',
   'Board width':'Width of one tile, in millimeters. Imported board designs keep their original width to preserve their mounting geometry.',

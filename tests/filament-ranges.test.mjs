@@ -13,3 +13,12 @@ test('combined PLA/PETG ranges match only supported members and retain backing',
     assert.equal(result.backing,'#ffffff');assert.deepEqual(result.backingFilament,previous.backingFilament);
   }
 });
+
+import {filamentWarnings} from '../lib/filaments.mjs';
+test('PLA/PETG incompatibility includes backing and all PLA/PETG variants',()=>{
+ const c={palette:['#ffffff'],filaments:[{family:'Bambu PETG HF'}],backingFilament:{family:'Bambu PLA Basic'}};
+ assert.equal(filamentWarnings(c).plaPetg,true);
+ assert.equal(filamentWarnings({...c,filaments:[{family:'Bambu PLA Matte'}]}).plaPetg,false);
+ assert.equal(filamentWarnings({...c,backingFilament:{family:'Bambu PETG Basic'}}).plaPetg,false);
+ assert.equal(filamentWarnings({...c,palette:['#ffffff','#000000'],filaments:[{family:'Bambu PETG-CF'},{family:'Bambu PLA-CF'}],backingFilament:{family:'Bambu PETG HF'}}).plaPetg,true);
+});
