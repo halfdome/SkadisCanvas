@@ -39,3 +39,20 @@ test('maximum-height H3C boards use compact towers without reducing tile size',(
  const p=printerLimits(c),l=plateLayout(c);assert.equal(p.usableDepth,270);assert.ok(l.tower.compact);
  assert.equal(l.x,5);assert.ok(l.y+c.height<=l.tower.y-l.tower.gap);assert.ok(l.y+c.height<=p.depth-p.margin);
 });
+
+test('explicit tower styles survive 3MF export and do not silently fall back',()=>{
+ for(const primeTowerStyle of ['standard','wall']){
+  const c={...defaults,printer:'h3c',width:80,height:80,primeTowerStyle};
+  const layout=plateLayout(c);assert.equal(layout.tower.compact,primeTowerStyle==='wall');
+  const parts=tileParts(c,new Uint8Array([0,1,2,3]),2,2,0,0);
+  const zip=unzipSync(makeProject3mf([{parts,name:'R01-C01',row:0,col:0}],c));
+  const settings=JSON.parse(strFromU8(zip['Metadata/project_settings.config']));
+  assert.equal(settings.enable_prime_tower,'1');
+  assert.equal(settings.prime_tower_rib_wall==='0',primeTowerStyle==='wall');
+  if(primeTowerStyle==='wall')assert.equal(Number(settings.prime_tower_width),layout.tower.width);
+ }
+ const large={...defaults,printer:'h3c',width:320,height:270};
+ assert.equal(plateLayout({...large,primeTowerStyle:'wall'}).tower.compact,true);
+ assert.throws(()=>plateLayout({...large,primeTowerStyle:'standard'}),/standard prime tower/);
+ assert.throws(()=>printerLimits({...large,primeTowerStyle:'invalid'}),/valid prime tower style/);
+});
