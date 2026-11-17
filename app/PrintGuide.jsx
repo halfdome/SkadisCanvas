@@ -5,6 +5,7 @@ import {Grip, X, Maximize2, Minimize2} from 'lucide-react';
 import ActionButton from './ActionButton.jsx';
 import BoardStylePreview from './BoardStylePreview.jsx';
 import PrintCrossSection from './PrintCrossSection.jsx';
+import SurfaceDetailExample from './SurfaceDetailExample.jsx';
 import {hasSpacers,isPictureBoard} from '../lib/board-designs.mjs';
 import {isBambu} from '../lib/project3mf.mjs';
 import {layerPlan} from '../lib/layers.mjs';
@@ -42,7 +43,10 @@ export default function PrintGuide({config:c,colors,onClose}){
   <div className="guide-popout-header"><button className="guide-drag-handle" aria-label="Move print guide" disabled={expanded} title={expanded?'Restore the guide to move it.':'Drag to move. Use arrow keys when focused; Shift moves faster.'} onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerCancel={stop} onLostPointerCapture={stop} onKeyDown={keys}><Grip size={19}/><span><span id="print-guide-title">Print guide</span><small>{expanded?'Expanded reading view':'Drag to move · keep designing alongside'}</small></span></button><ActionButton className="guide-header-button" aria-label={expanded?'Restore print guide':'Expand print guide'} aria-pressed={expanded} hint={expanded?'Return to the floating guide.':'Expand the guide to fill the browser window.'} onClick={toggleExpanded}>{expanded?<Minimize2 size={18}/>:<Maximize2 size={18}/>}</ActionButton><button ref={closeButton} className="guide-header-button" aria-label="Close print guide" title="Close print guide (Esc)" onClick={onClose}><X size={20}/></button></div>
   <div className="guide-scroll" tabIndex={0} aria-label="Print guide steps">
    <p className="guide-intro"><strong>Follow the workflow below, step by step.</strong></p>
-   <nav className="guide-step-nav" aria-label="Guide steps">{[[1,'01 Printer'],[2,'02 Board dimensions'],[3,'03 Artwork'],[4,'04 Color palette'],[5,'05 Print layers'],['export','Export'],['slice','Slice'],['assemble','Assemble']].map(([id,label])=><a key={id} href={`#guide-step-${id}`} title={`Jump to ${label} instructions`}>{label}</a>)}</nav>
+   <nav className="guide-stage-nav" aria-label="Workflow stages">{['Configure','Test','Print'].map(label=><a key={label} href={`#guide-${label.toLowerCase()}`} title={`Jump to ${label.toLowerCase()}`}>{label}</a>)}</nav>
+   <section className="guide-group" id="guide-configure" aria-labelledby="guide-configure-title">
+   <h2 id="guide-configure-title">Configure</h2>
+   <nav className="guide-step-nav" aria-label="Configuration sections">{[[1,'01 Printer'],[2,'02 Board dimensions'],[3,'03 Artwork'],[4,'04 Color palette'],[5,'05 Print layers']].map(([id,label])=><a key={id} href={`#guide-step-${id}`} title={`Jump to ${label} instructions`}>{label}</a>)}</nav>
    <Step number={1} title="Printer" visual={<ExportDiagram bambu={bambu}/>}>
     <p>Select your <strong>Printer model</strong> in <strong>Printer (Section 01)</strong>. This sets the build-volume limits and the available filament presets.</p>
     <p>For multi-filament Bambu projects, choose Automatic, Standard or Wall-style under <strong>Prime tower style</strong>. Review <strong>Build plate settings</strong> for edge margins and tower clearance.</p>
@@ -64,26 +68,31 @@ export default function PrintGuide({config:c,colors,onClose}){
     <p><strong>Use source colors as custom filaments</strong> needs matching real spools and slicer presets; it does not mix inks or filaments. <strong>Undo custom filaments</strong> restores the previous assignments.</p>
     <p>Usage estimates update automatically. Wait for <strong>Calculated</strong>; estimates cover model material, excluding purge and the prime tower. Check final totals after slicing.</p>
    </Step>
-   <Step number={5} title="Print layers" visual={<PrintCrossSection config={c} colors={colors}/>}>
+   <Step number={5} title="Print layers" visual={<><PrintCrossSection config={c} colors={colors}/><SurfaceDetailExample/></>}>
     <p>In <strong>Print layers (Section 05)</strong>, choose <strong>Print orientation</strong>, <strong>Layer height</strong> and <strong>Colored layers</strong>. Spacer boards require face-down printing.</p>
     <p>Current settings: <strong>{c.layerHeight} mm</strong> layers; {layers?.full?'artwork colors fill the board thickness.':`the ${c.faceDown?'first':'last'} ${c.colorLayers} layers contain the artwork.`} Review the <strong>Print cross-section</strong> to check the colored depth and backing.{spacers?' Rear legs use the backing filament.':''}</p>
-    <p>Choose <strong>Surface detail</strong>: a smaller mm/pixel value preserves finer artwork but increases processing time and file size. Review the <strong>Single-color backing</strong> filament here.</p>
-    <p>{spacers?'Back-label engraving is unavailable with spacers.':'Enable “Engrave tile ID on the back” if you want position labels and enough backing thickness remains.'} Finish these settings before exporting.</p>
+    <p><strong>Surface detail</strong> sets the size of each colored cell in the artwork, like pieces in a mosaic. Smaller cells make curved edges smoother and preserve smaller details, but increase processing time and file size. Start with 2 mm/pixel for a quick draft; try 0.4 mm/pixel for finer artwork and compare the tile preview.</p>
+    <p>Review the <strong>Single-color backing</strong> filament. {spacers?'Back-label engraving is unavailable with spacers.':'Enable “Engrave tile ID on the back” if you want position labels and enough backing thickness remains.'} Finish these settings before exporting.</p>
    </Step>
-   <Step id="export" title="Export one tile before the whole wall" visual={<ExportDiagram bambu={bambu}/>}>
-    <p>Click a tile, open <strong>Export tile</strong>, then download that tile. The ZIP includes its 3MF and separate STL parts. <strong>Download blank tile</strong> creates an STL for checking the board and mounting fit without artwork.</p>
-    <p><strong>Download wall</strong> exports every tile. {bambu?'Bambu projects use one tile per plate. More than 36 tiles are split into rectangular projects in a ZIP with an assembly map.':'Custom-printer exports require manual plate and material setup in your slicer.'}</p>
-    <p>Use <strong>Save settings as…</strong> at the bottom of the left column to keep the configuration. Save the artwork separately and upload it again after <strong>Load settings</strong>.</p>
-   </Step>
-   <Step id="slice" title="Open, slice and inspect" visual={<ExportDiagram bambu={bambu}/>}>
+   </section>
+   <section className="guide-group" id="guide-test" aria-labelledby="guide-test-title">
+   <h2 id="guide-test-title">Test</h2>
+   <Step id="test-tile" title="Print and check one tile" visual={<ExportDiagram bambu={bambu}/>}>
+    <p>Choose a tile with representative colors and fine details. Open <strong>Export tile</strong> and download it; the ZIP includes its 3MF and separate STL parts. For a mounting or board-fit check without artwork, use <strong>Download blank tile</strong>.</p>
     <p>{bambu?<>Open the 3MF <strong>as a project in Bambu Studio</strong>. Confirm the printer, 0.4 mm nozzle profile, build plate and filament presets; map them to your loaded spools before printing.</>:<>Open the 3MF in your slicer, select your printer and assign the filament for each part.</>} If using STLs, import all parts together as <strong>one multipart object</strong>; keep their relative positions.</p>
     <p>Use the settings from <strong>Print layers (Section 05)</strong>. The exported orientation is already <strong>{c.faceDown?'face-down':'face-up'}</strong>. Do not mirror or flip it again. Set first and subsequent layers to <strong>{c.layerHeight} mm</strong>. {layers?.full?'Artwork colors fill the board thickness.':`The ${c.faceDown?'first':'last'} ${c.colorLayers} layers contain the artwork.`}{spacers?' Rear legs use the backing filament.':''}</p>
-    <p>Slice and inspect the plate layout and colored layers: no overlap with the tower, every color in its intended region, and {spacers?'four connected rear legs':'a continuous backing where configured'}. Check thin details and slicer warnings. Print one tile and check fit and appearance before printing the rest.</p>
+    <p>Slice and inspect the plate layout and colored layers: no overlap with the tower, every color in its intended region, and {spacers?'four connected rear legs':'a continuous backing where configured'}. Check thin details and slicer warnings, then print this tile. Inspect its colors, surface detail, strength and mounting fit. Adjust the configuration and repeat the test if needed.</p>
    </Step>
-   <Step id="assemble" title="Assemble from the artwork side" visual={<AssemblyDiagram/>}>
+   </section>
+   <section className="guide-group" id="guide-print" aria-labelledby="guide-print-title">
+   <h2 id="guide-print-title">Print</h2>
+   <Step id="print-wall" title="Print and assemble the wall" visual={<AssemblyDiagram/>}>
+    <p>Once the test tile looks right, use <strong>Save settings as…</strong> to keep the configuration. Save the artwork separately and upload it again after <strong>Load settings</strong>.</p>
+    <p><strong>Download wall</strong> exports every tile. {bambu?'Bambu projects use one tile per plate. More than 36 tiles are split into rectangular projects in a ZIP with an assembly map.':'Custom-printer exports require manual plate and material setup in your slicer.'} Apply the settings verified with your test tile, check filament assignments and slice each plate before printing.</p>
     <p><strong>R01</strong> is the top row; <strong>C01</strong> is the left column. Lay out the cooled tiles face-up using the assembly map or tile names. Keep the <strong>{c.gap} mm Tile gap</strong> configured in <strong>Board dimensions (Section 02)</strong>.</p>
     <p>{spacers?'Rear spacers set the wall clearance. Check mounting hardware against the actual bore and your wall before installation. Back-label engraving is unavailable with spacers.':'Optional back-label engraving marks tile positions when enough backing remains. Mounting hardware and panel connectors are not included.'}</p>
    </Step>
+   </section>
   </div>
  </section>,document.body);
 }
