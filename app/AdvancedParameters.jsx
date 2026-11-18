@@ -18,7 +18,7 @@ export default function AdvancedParameters({config:c,colors,Step,ColorDiagram}){
   <Step number={1} title="Printer">
    <Topic title="Choose the machine before sizing the tiles" visual={<PlateSpaceDiagram/>}>
     <Parameters items={[
-     ['Printer model','Select the machine you will use. This sets the build-volume limits, compatible filament presets and the exported printer profile. Changing the printer can rematch the palette and change the initial color count; review Section 04 afterward.'],
+     ['Printer model','Select the machine you will use. This sets the build-volume limits, compatible filament presets and the exported printer profile. Bambu settings are downloaded on demand from a fixed, tested upstream version and cached in this browser. A new printer or cleared cache needs an internet connection. If loading fails, use Retry printer settings; exports wait until the settings are ready. Changing the printer can rematch the palette and change the initial color count; review Section 04 afterward.'],
      ['Build volume / Usable maximum tile area','Build volume is the machine’s overall limit. Usable maximum tile area is the smaller rectangle left after edge margins, printer exclusion zones and the tower reserve. Size each tile against the usable area, not the overall bed.'],
      ['Use maximum tile size','Applies the displayed usable width and height to every tile. Columns and rows stay the same, so the total wall size changes. Recheck the wall dimensions, crop and seam pattern afterward.']
     ]}/>
@@ -129,6 +129,7 @@ export default function AdvancedParameters({config:c,colors,Step,ColorDiagram}){
    </Topic>
   </Step>
   <Step number={5} title="Print layers">
+   <Topic title="Export identification"><p>Every exported tile includes a small rear export code and an enclosed internal pattern, alongside identification metadata in its 3MF. These contain no name or email and are separate from the optional row/column label. Allow at least 1.6 mm body thickness at 0.2 mm layers (2.4 mm at 0.4 mm layers) and clear space between holes. Export will explain if a mark cannot fit. Inspect the sliced rear detail and internal cavities, and test the print’s strength. Identifiers can be removed; they do not prove ownership or prevent copying. See Service terms &amp; export identification below the design controls.</p></Topic>
    <Topic title="Set the printing direction and color depth" visual={<OrientationDiagram/>}>
     <Parameters items={[
      ['Print orientation','Face-down prints the picture against the build plate first. Face-up prints the backing first and the artwork last. Spacers require face-down so the legs build upward. Export applies the orientation; do not mirror or flip the project again.'],

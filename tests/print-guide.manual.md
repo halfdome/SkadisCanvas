@@ -38,4 +38,13 @@ The production checklist was checked against the generated 3MF settings and Bamb
 4. Set 3 columns, 2 rows, 180 × 160 mm tiles and 2 mm gaps. The guide must show 544 × 322 mm. Enable solid-picture mounting spacers and choose four 0.2 mm colored layers: current cross-section must show 0.80 mm artwork, 4.20 mm backing and 15 mm overall depth with the default legs. Restore the starting controls afterward.
 5. At maximum colored layers, verify full-depth terminology and zero backing depth. With invalid layer settings, show the correction prompt rather than misleading arithmetic.
 6. Check the detail table against grid arithmetic: a 200 mm tile at 2 mm/pixel is 100 × 100; at 0.4 it is 500 × 500 and exceeds the 160,000-cell per-tile limit. Explain workload as sample cells, not promised print-time/file-size multipliers.
-7. Test, Print and Assemble remain separate and reachable in Advanced. The export-location illustrations still identify the actual Export tile and Download wall controls.
+7. Test, Print and Assemble remain separate and reachable in Advanced. The export-location illustrations still identify the actual Export tile and Download All controls.
+
+
+## v1.2 exports and runtime profiles
+
+1. With an empty browser cache, select a Bambu printer. Preview remains usable while printer settings load; exports wait for the matching profile. Switching printers must not apply a late response from the previous selection.
+2. Revisit the selected printer with its cache available. The pinned settings should be reused. Test an unavailable upstream source without cache: show a retry action, never a generic-printer fallback.
+3. In both guide modes, check **Download All** in the text and toolbar illustration. Simple explains loading/retry; Advanced explains cached profiles and export identifiers.
+4. Cancel first-export terms; no file should download. Reopen: agreement is still unchecked and the download action disabled. Accept for a local sample and export; review terms from the controls afterward. A new session requires acceptance again.
+5. Verify all wall tiles appear once, at most 36 plates per 3MF. Metadata, rear code and internal code must share the export ID. Open the browser download in Bambu Studio, inspect first colored layers and identification details. Print a physical sample separately before making claims about strength or forensic readability.

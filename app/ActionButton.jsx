@@ -27,7 +27,7 @@ const hints={
   'Original':'Show the original image with the current crop and board holes. Scroll over the canvas to zoom the artwork.',
   'Toggle tile grid':'Show or hide boundaries between tiles in the whole-canvas preview.',
   'Cancel':'Stop generating the current export.',
-  'Download wall':'Export every tile as a print project. Larger walls are split into rectangular projects in a ZIP.',
+  'Download All':'Export every tile as a print project. Larger walls are split into rectangular projects in a ZIP.',
   'Export tile':'Show downloads for the selected tile, including its artwork or a blank fit-test board.',
   'Download blank tile':'Download this board without artwork as an STL for checking its shape and accessory fit.',
   'Dismiss message':'Close this notification.',

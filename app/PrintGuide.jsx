@@ -23,7 +23,7 @@ function SimpleGuide({config:c}){
   <section className="guide-group" id="guide-configure" aria-labelledby="guide-configure-title">
    <h2 id="guide-configure-title">Configure</h2>
    <p className="guide-summary">Start with these essentials. The default layer and detail settings are a good starting point for your first test.</p>
-   <Step number={1} title="Printer"><p>Choose your <strong>Printer model</strong> in Section 01.</p></Step>
+   <Step number={1} title="Printer"><p>Choose your <strong>Printer model</strong> in Section 01. Bambu settings load when you select a printer; wait for its usable tile area to appear. If loading fails, choose <strong>Retry printer settings</strong>.</p></Step>
    <Step number={2} title="Board dimensions"><p>In Section 02, choose a <strong>Board style</strong>, then set <strong>Columns</strong>, <strong>Rows</strong> and each tile’s <strong>Board width</strong> and <strong>Board height</strong>. Stay within the printer’s usable tile area and check the total wall size.</p></Step>
    <Step number={3} title="Artwork" visual={<ArtworkDiagram/>}><p>In Section 03, <strong>Upload an illustration</strong>. Bold shapes, a few colors and large areas of color work best. Choose <strong>Fill canvas</strong> to fill the wall or <strong>Fit artwork</strong> to keep the whole image visible.</p></Step>
    <Step number={4} title="Color palette" visual={<ColorDiagram config={c}/>}><p>In Section 04, choose a <strong>Filament range</strong> matching your spools, set the <strong>Number of surface colors</strong>, then click <strong>Match image colors</strong>. Check the matched colors in the preview.</p></Step>
@@ -32,7 +32,7 @@ function SimpleGuide({config:c}){
   <section className="guide-group" id="guide-test" aria-labelledby="guide-test-title">
    <h2 id="guide-test-title">Test</h2>
    <Step id="test-tile" title="Try one tile first" visual={<ExportTileLocation/>}>
-    <p>Click a representative tile in the canvas. In <strong>Selected tile</strong> below the preview, open <strong>Export tile</strong> and choose <strong>Download tile</strong>. Unzip the download.</p>
+    <p>Click a representative tile in the canvas. In <strong>Selected tile</strong> below the preview, open <strong>Export tile</strong> and choose <strong>Download tile</strong>. Read and accept the service terms when prompted, then unzip the download.</p>
     <p>{bambu?<>Open its 3MF <strong>as a project in Bambu Studio</strong>.</>:<>Open its 3MF in your slicer and set up your printer and materials.</>} Confirm the printer and filament assignments. Keep the exported orientation and use <strong>{c.layerHeight} mm</strong> for first and subsequent layer heights.</p>
     <p>Follow the <a href="#guide-print" className="guide-inline-link">Print steps below</a> to slice and print this tile. Check its appearance and fit before continuing.</p>
    </Step>

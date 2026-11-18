@@ -9,3 +9,7 @@ Always commit completed changes and push them to https://github.com/halfdome/Ska
 Publish the updated service and refresh the live page after completing the requested changes, unless the user requests local-only work.
 
 Create focused commits with descriptive messages before running the Sites publishing helper, so publication does not create generic "Update Site source" commits. Keep the existing commit history; do not squash or rewrite published commits without explicit user authorization.
+
+# User-facing changes
+
+Always update the print guide when changing controls, export behavior or printing workflows. Keep its wording and illustrations consistent with the current UI.

@@ -1,6 +1,6 @@
 {
   "name": "skadis-canvas",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -11,8 +11,8 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/*.test.mjs",
-    "test:bambu": "node scripts/validate-bambu.mjs"
+    "test": "node --import ./scripts/load-test-profiles.mjs --test tests/*.test.mjs",
+    "test:bambu": "node --import ./scripts/load-test-profiles.mjs scripts/validate-bambu.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

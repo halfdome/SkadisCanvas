@@ -1,3 +1,7 @@
+import Module from 'manifold-3d';
+import {identifyParts} from '../lib/watermark.mjs';
+import {createProvenance} from '../lib/provenance.mjs';
+const api=await Module();api.setup();
 import {spawnSync} from 'node:child_process';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
@@ -16,12 +20,13 @@ const studio=process.env.BAMBU_STUDIO||'/Applications/BambuStudio.app/Contents/M
 const root=path.resolve(process.env.BAMBU_VALIDATION_ROOT||'outputs/validation');mkdirSync(root,{recursive:true});
 for(const printer of Object.keys(profiles).filter(key=>!process.argv[2]||process.argv.slice(2).includes(key))){
  const c={...defaults,printer,cols:2,rows:1,width:80,height:80,filaments:defaults.palette.map(()=>({family:'Bambu PLA Basic',colorName:'Custom color'})),backingFilament:{family:'Bambu PLA Basic',colorName:'Custom color'}};
- c.backLabel=true;
+ c.backLabel=true;c.provenance=createProvenance(new Date().toISOString());
  if(process.env.SURFACE_COLORS){c.palette=['#111111','#cc3333','#33aa55','#3366cc','#ddaa22','#aa44aa','#44aaaa','#bbaa88'].slice(0,Number(process.env.SURFACE_COLORS));c.filaments=c.palette.map(()=>({family:'Bambu PLA Basic',colorName:'Custom color'}));}
  if(process.env.TEST_LAYER_HEIGHT)c.layerHeight=Number(process.env.TEST_LAYER_HEIGHT);
  if(process.env.PRIME_TOWER_STYLE)c.primeTowerStyle=process.env.PRIME_TOWER_STYLE;
  if(process.env.MAX_TILE){const p=printerLimits(c);c.width=Math.floor(p.usableWidth/c.pitch)*c.pitch;c.height=Math.floor(p.usableDepth/c.pitch)*c.pitch;}
  const tiles=Array.from({length:2},(_,col)=>({name:`R01-C0${col+1}`,row:0,col,parts:tileParts(c,Uint8Array.from({length:c.palette.length},(_,i)=>i),c.palette.length===4?2:4,2,col,0)}));
+ for(const tile of tiles){const identified=identifyParts(api,tile.parts,c);tile.parts=identified.parts;tile.mark=identified.mark;}
  const dir=path.join(root,(process.env.PRIME_TOWER_STYLE?`${printer}-tower-${process.env.PRIME_TOWER_STYLE}`:printer)+(process.env.MAX_TILE?'-max':'')+(process.env.SURFACE_COLORS?`-${c.palette.length}colors-${c.layerHeight}mm`:''));mkdirSync(dir,{recursive:true});
  const input=path.join(dir,'fixture.3mf'),output=path.join(dir,'sliced.3mf');writeFileSync(input,makeProject3mf(tiles,c));
  const gcodeOnly=process.env.BAMBU_GCODE_ONLY==='1';

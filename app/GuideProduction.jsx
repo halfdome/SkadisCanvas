@@ -4,14 +4,14 @@ import {hasSpacers} from '../lib/board-designs.mjs';
 
 function DownloadWallLocation(){
  return <figure className="export-location-example">
-  <svg viewBox="0 0 360 290" role="img" aria-label="Download wall is in the toolbar above the main canvas, on the right. Illustrated example.">
+  <svg viewBox="0 0 360 290" role="img" aria-label="Download All is in the toolbar above the main canvas, on the right. Illustrated example.">
    <rect x="8" y="8" width="344" height="274" rx="8" fill="#fff" stroke="#b4c1b4"/>
    <text x="22" y="32" fontSize="12" fontWeight="600" fill="#304f4a">Total wall size</text>
    <text x="22" y="51" fontSize="11" fill="#59665f">Tiles · print projects</text>
    <rect x="183" y="16" width="159" height="48" rx="7" fill="none" stroke="#d77e42" strokeWidth="3"/>
    <rect x="188" y="21" width="149" height="38" rx="4" fill="#304f4a"/>
    <path d="M202 29v14m-4-4 4 4 4-4m-10 4v6h12v-6" fill="none" stroke="#fff" strokeWidth="1.6"/>
-   <text x="217" y="39" fontSize="14" fontWeight="600" fill="#fff">Download wall</text>
+   <text x="217" y="39" fontSize="14" fontWeight="600" fill="#fff">Download All</text>
    <text x="217" y="51" fontSize="9" fill="#dce7de">ZIP / 3MF</text>
    <path d="M8 76H352" stroke="#dde4d8"/>
    <text x="22" y="97" fontSize="11" fill="#59665f">Wall preview</text>
@@ -22,7 +22,7 @@ function DownloadWallLocation(){
    <path d="M22 240Q126 210 211 240T338 231V264H22Z" fill="#a4533b"/>
    <path d="M101 110V264M180 110V264M259 110V264M22 187H338" stroke="#fff" strokeWidth="1.5"/>
   </svg>
-  <figcaption>Above the canvas: <strong>Download wall</strong>.</figcaption>
+  <figcaption>Above the canvas: <strong>Download All</strong>.</figcaption>
  </figure>;
 }
 export default function GuideProduction({config:c,advanced=false,Step,AssemblyDiagram}){
@@ -31,7 +31,7 @@ export default function GuideProduction({config:c,advanced=false,Step,AssemblyDi
   <section className="guide-group" id="guide-print" aria-labelledby="guide-print-title">
    <h2 id="guide-print-title">Print</h2>
    <Step id="print-wall" title={bambu?'Prepare and print in Bambu Studio':'Prepare and print in your slicer'} visual={<DownloadWallLocation/>}>
-    <p>Once the test tile looks right, use <strong>Download wall</strong>. Unzip the download if needed and open each project in turn. Use the same checks below for your test tile.</p>
+    <p>Once the test tile looks right, use <strong>Download All</strong> to export every tile. On your first export in this session, read the service terms and confirm that you have permission to use the artwork. Free exports are for personal, noncommercial use; selling files or prints requires separate commercial permission. Unzip the download if needed and open each project in turn. Use the same checks below for your test tile.</p>
     {bambu&&<p><strong>In Bambu Studio app:</strong></p>}
     <ol className="guide-checklist">
      <li><strong>Open the project.</strong> {bambu?<>Use <strong>File → Open Project</strong> for the 3MF so its plates, colors and print settings stay together.</>:<>Open the 3MF and configure your printer and each part’s filament.</>}</li>
